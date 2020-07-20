@@ -1,5 +1,5 @@
 # Examples from XC8-PIC-Assembler-UG-for-EE-50002994A.pdf
-=========================================================
+---------------------------------------------------------
 
 This repository contains assembly language source code 
 examples found in the Microchip documentation for using 
