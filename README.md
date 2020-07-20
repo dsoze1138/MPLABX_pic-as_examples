@@ -16,7 +16,8 @@ MPLABX v5.40 to start a debug session with the symbolic
 debug information loaded. Using them is a finicky 
 process.
 
-Date: 2020-July-19
+#Date: 2020-July-19
+
 Microchip has pushed an update to the pic-as(v2.20) tool chain 
 in MPLABX v5.40. 
 
