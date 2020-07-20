@@ -8,13 +8,13 @@ the pic-as(v2.20) tool chain.
 The code has been corrected and expanded where necessary 
 so that these projects will build with MPLABX v5.40
 
-Note that MPLABX v5.40 is broken when trying to use symbolic
-debugging with the pic-as(v2.20) tool chain.
+~~ Note that MPLABX v5.40 is broken when trying to use symbolic
+debugging with the pic-as(v2.20) tool chain. ~~
 
-Projects are included in this repository that will get 
+~~ Projects are included in this repository that will get 
 MPLABX v5.40 to start a debug session with the symbolic 
 debug information loaded. Using them is a finicky 
-process.
+process. ~~
 
 ## Date: 2020-July-19
 
