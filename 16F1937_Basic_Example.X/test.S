@@ -3,6 +3,9 @@
 ;
 ; From document: http://ww1.microchip.com/downloads/en/DeviceDoc/XC8-PIC-Assembler-UG-for-EE-50002994A.pdf
 ;
+; Add this line in the project properties box, pic-as Global Options -> Additional options: 
+;    -Wl,-presetVec=0h -Wa,-a -Wl,-Map=test.map 
+;
     PROCESSOR 16F1937
 
 #include <xc.inc>
