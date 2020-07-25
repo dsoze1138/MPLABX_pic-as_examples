@@ -32,3 +32,7 @@ Those project have been removed.
 
 I may expand these notes in the future to have a step 
 by step guide on how to use them.
+
+## Date: 2020-July-25
+
+Added example for PIC10F200
