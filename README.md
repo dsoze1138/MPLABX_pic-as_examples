@@ -36,3 +36,7 @@ by step guide on how to use them.
 ## Date: 2020-July-25
 
 Added example for PIC10F200
+
+## Date: 2020-August-5
+
+Added example for PIC10F320
