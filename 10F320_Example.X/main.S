@@ -57,7 +57,8 @@ WREG_save:      DS  1
 STATUS_save:    DS  1
 ;
 ;   Interrupt vector and handler
-    PSECT   Isr_vec,global,reloc=2,class=CODE,delta=1
+    PSECT   Isr_vec,global,class=CODE,delta=2
+    GLOBAL  IsrVec
 ;
 IsrVec:
     movwf   WREG_save
