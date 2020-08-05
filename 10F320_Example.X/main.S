@@ -12,7 +12,7 @@
 ;
 ; Add this line in the project properties box "pic-as Global Options -> Additional options": 
 ;
-;   -Wa,-a -Wl,-pResetVec=0h
+;   -Wa,-a -Wl,-pResetVec=0h,-pIsr_vec=4h
 ;
     PROCESSOR   10F320
     PAGEWIDTH   132
@@ -47,6 +47,31 @@ Counter:    DS      1
     global  ResetVector
 ResetVector:
     goto    Start
+;
+;   Data space use by interrupt handler to save context
+    PSECT   Isr_data,global,class=RAM,space=1,delta=1,noexec
+;
+    GLOBAL  WREG_save,STATUS_save
+;
+WREG_save:      DS  1
+STATUS_save:    DS  1
+;
+;   Interrupt vector and handler
+    PSECT   Isr_vec,global,reloc=2,class=CODE,delta=1
+;
+IsrVec:
+    movwf   WREG_save
+    swapf   STATUS,W
+    movwf   STATUS_save
+;
+IsrHandler:
+;
+IsrExit:
+    swapf   STATUS_save,W
+    movwf   STATUS
+    swapf   WREG_save,F
+    swapf   WREG_save,F
+    retfie                      ; Return from interrupt
 ;
 ; Simple test application that clears
 ; a RAM location to zero, then increments
