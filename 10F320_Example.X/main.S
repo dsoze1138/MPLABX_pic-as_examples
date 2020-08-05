@@ -30,7 +30,7 @@
  config PWRTE = OFF      ; Power-up Timer Enable bit (PWRT disabled)
  config MCLRE = OFF      ; MCLR Pin Function Select bit (MCLR pin function is digital input, MCLR internally tied to VDD)
  config CP = OFF         ; Code Protection bit (Program memory code protection is disabled)
- config LVP = ON         ; Low-Voltage Programming Enable (Low-voltage programming enabled)
+ config LVP = OFF        ; Low-Voltage Programming Enable (Low-voltage programming disabled)
  config LPBOR = ON       ; Brown-out Reset Selection bits (BOR enabled)
  config BORV = LO        ; Brown-out Reset Voltage Selection (Brown-out Reset Voltage (Vbor), low trip point selected.)
  config WRT = OFF        ; Flash Memory Self-Write Protection (Write protection off)
