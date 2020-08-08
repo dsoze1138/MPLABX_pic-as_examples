@@ -33,6 +33,11 @@
 ;  Note:
 ;   RC4,RC5 can only be used as digital inputs when the USB transceiver is not used.
 ;
+;
+;
+;
+;
+;
     list        p=18F2550
     list        c=132
     list        r=dec
