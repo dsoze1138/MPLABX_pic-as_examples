@@ -6,6 +6,9 @@
 ; Add this line in the project properties box, pic-as Global Options -> Additional options: 
 ;   -Wa,-a -Wl,-presetVec=0h,-pudata_acs=0 -Wl,-Map=test.map -mcallgraph=full
 ;
+; History:
+;   2020-AUG-08: Workaround assembler bug with configuration word settings.
+;
     PROCESSOR 18F4520
 ;
 #include <xc.inc>
@@ -19,7 +22,7 @@
  config BOREN = SBORDIS  ; Brown-out Reset Enable bits (Brown-out Reset enabled in hardware only (SBOREN is disabled))
  config BORV = 3         ; Brown Out Reset Voltage bits (Minimum setting)
  config WDT = OFF        ; Watchdog Timer Enable bit (WDT disabled (control is placed on the SWDTEN bit))
- config WDTPS = 32768    ; Watchdog Timer Postscale Select bits (1:32768)
+ config WDTPS = 15 ;32768; Watchdog Timer Postscale Select bits (1:32768)
  config CCP2MX = PORTC   ; CCP2 MUX bit (CCP2 input/output is multiplexed with RC1)
  config PBADEN = OFF     ; PORTB A/D Enable bit (PORTB<4:0> pins are configured as digital I/O on Reset)
  config LPT1OSC = OFF    ; Low-Power Timer1 Oscillator Enable bit (Timer1 configured for higher power operation)
