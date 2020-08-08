@@ -33,8 +33,13 @@
 ;  Note: 
 ;   RC4,RC5 can only be used as digital inputs when the USB transceiver is not used.
 ;
+; WARNING:
+;   The pic-as(v2.20) tool chain config directives 
+;   DO NOT SET THE CONFIGURATION WORDS CORRECTLY 
+;   for the PIC18F2550.
+;
     processor   18F2550
-    pagewidth   132
+    pagewidth   132 
     radix       dec
 ;
  config PLLDIV = 5          ; PLL Prescaler Selection bits (Divide by 5 (20 MHz oscillator input))
