@@ -44,3 +44,8 @@ Added example for PIC10F320
 ## Date: 2020-August-6
 
 Added example of port of PIC18F2550 code from MPASM to pic-as(v2.20)
+
+## Date: 2020-August-14
+
+Added example for PIC10F206
+
