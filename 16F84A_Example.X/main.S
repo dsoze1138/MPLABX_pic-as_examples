@@ -109,7 +109,7 @@ loop:
     movf    BANKMASK(PORTB),w
     BANKSEL tmp
     movwf   BANKMASK(tmp)
-    subwf   max^(tmp&0ff80h),w  ;is this value larger than max?
+    subwf   max,w               ;is this value larger than max?
     skipnc
     goto    loop                ;no - read again
     movf    BANKMASK(tmp),w     ;yes - record this new high value
