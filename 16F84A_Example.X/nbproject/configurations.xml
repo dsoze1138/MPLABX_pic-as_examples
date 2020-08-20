@@ -641,7 +641,7 @@
         <property key="summary-sha256" value="false"/>
         <property key="summary-xml" value="false"/>
         <property key="summary-xmlfull" value="false"/>
-        <appendMe value="-Wa,-a -Wl,-pResetVec=0h,-pIsr_vec=4h"/>
+        <appendMe value="-Wa,-a -Wl,-pPor_Vec=0h,-pIsr_Vec=4h"/>
       </pic-as-global>
       <pic-as-linker>
         <property key="linker-callgraph" value="std"/>

@@ -11,7 +11,7 @@
 ;   Example project for the PIC16F84A controller using the pic-as(v2.20) tool chain.
 ;
 ; Add this line in the project properties box, pic-as Global Options -> Additional options: 
-;   -Wa,-a -Wl,-pResetVec=0h,-pIsr_vec=4h
+;   -Wa,-a -Wl,-pPor_Vec=0h,-pIsr_Vec=4h
 ;
 ;                           PIC16F84A
 ;                   +----------:_:----------+
@@ -47,17 +47,10 @@
   skipnz  MACRO
     btfsc   STATUS,STATUS_Z_POSITION
   ENDM
-
-;objects in bank 0 memory
-    PSECT   udata_bank0
-max:
-    DS      1                   ;reserve 1 byte for max
-tmp:
-    DS      1                   ;reserve 1 byte for tmp
 ;
 ; Power-On-Reset entry point
 ;
-    PSECT   ResetVec,global,class=CODE,delta=2
+    PSECT   Por_Vec,global,class=CODE,delta=2
     global  resetVec
 resetVec:
     PAGESEL main                ;jump to the main routine
@@ -65,7 +58,7 @@ resetVec:
 
 ;
 ;   Data space use by interrupt handler to save context
-    PSECT   Isr_data,global,class=RAM,space=1,delta=1,noexec
+    PSECT   Isr_Data,global,class=RAM,space=1,delta=1,noexec
 ;
     GLOBAL  WREG_save,STATUS_save
 ;
@@ -74,7 +67,7 @@ STATUS_save:    DS  1
 PCLATH_save:    DS  1
 ;
 ;   Interrupt vector and handler
-    PSECT   Isr_vec,global,class=CODE,delta=2
+    PSECT   Isr_Vec,global,class=CODE,delta=2
     GLOBAL  IsrVec
 ;
 IsrVec:
@@ -96,8 +89,13 @@ IsrExit:
     retfie                      ; Return from interrupt
     
 
+;objects in bank 0 memory
+    PSECT   MainData,global,class=RAM,space=1,delta=1,noexec
+max:    DS      1               ;reserve 1 byte for max
+tmp:    DS      1               ;reserve 1 byte for tmp
+
 /* find the highest PORTB value read, storing this into the object max */
-    PSECT   code
+    PSECT   MainCode,global,class=CODE,delta=2
 main:
     BANKSEL TRISB               ;starting point
     movlw   0xFF
