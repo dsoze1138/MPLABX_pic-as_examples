@@ -1,31 +1,31 @@
 ;
-; File:     main.S
-; Target:   PIC16f84A
-; Author:   dan1138
-; Date:     2020-08-20
-; Compiler: pic-as(v2.20)
-; IDE:      MPLABX v5.40
+; File:     main.S
+; Target:   PIC16f84A
+; Author:   dan1138
+; Date:     2020-08-20
+; Compiler: pic-as(v2.20)
+; IDE:      MPLABX v5.40
 ;
-; Description:
+; Description:
 ;
-;   Example project for the PIC16F84A controller using the pic-as(v2.20) tool chain.
+;   Example project for the PIC16F84A controller using the pic-as(v2.20) tool chain.
 ;
-; Add this line in the project properties box, pic-as Global Options -> Additional options: 
-;   -Wa,-a -Wl,-pPor_Vec=0h,-pIsr_Vec=4h
+; Add this line in the project properties box, pic-as Global Options -> Additional options: 
+;   -Wa,-a -Wl,-pPor_Vec=0h,-pIsr_Vec=4h
 ;
-;                           PIC16F84A
-;                   +----------:_:----------+
-;             <>  1 : RA2               RA1 : 18 <> 
-;             <>  2 : RA3               RA0 : 17 <> 
-;             <>  3 : RA4/T0CKI        OSC1 : 16 <- 4MHz crystal
-;    ICSP_VPP ->  4 : MCLR             OSC2 : 15 -> 4MHz crystal     
-;         GND ->  5 : GND               VDD : 14 <- 5v0
-;             <>  6 : RB0/INT       PGD/RB7 : 13 <> ICSP_PGD
-;             <>  7 : RB1           PGC/RB6 : 12 <> ICSP_PGC
-;             <>  8 : RB2               RB5 : 11 <> 
-;             <>  9 : RB3               RB4 : 10 <> 
-;                   +-----------------------:
-;                            DIP-18
+;                           PIC16F84A
+;                   +----------:_:----------+
+;             <>  1 : RA2               RA1 : 18 <> 
+;             <>  2 : RA3               RA0 : 17 <> 
+;             <>  3 : RA4/T0CKI        OSC1 : 16 <- 4MHz crystal
+;    ICSP_VPP ->  4 : MCLR             OSC2 : 15 -> 4MHz crystal
+;         GND ->  5 : GND               VDD : 14 <- 5v0
+;             <>  6 : RB0/INT       PGD/RB7 : 13 <> ICSP_PGD
+;             <>  7 : RB1           PGC/RB6 : 12 <> ICSP_PGC
+;             <>  8 : RB2               RB5 : 11 <> 
+;             <>  9 : RB3               RB4 : 10 <> 
+;                   +-----------------------:
+;                            DIP-18
 
     PROCESSOR   16F84A
     PAGEWIDTH   132
@@ -85,7 +85,7 @@ IsrExit:
     swapf   STATUS_save,W
     movwf   STATUS
     swapf   WREG_save,F
-    swapf   WREG_save,F
+    swapf   WREG_save,W
     retfie                      ; Return from interrupt
     
 
