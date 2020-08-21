@@ -71,7 +71,7 @@ IsrExit:
     swapf   STATUS_save,W
     movwf   STATUS
     swapf   WREG_save,F
-    swapf   WREG_save,F
+    swapf   WREG_save,W
     retfie                      ; Return from interrupt
 ;
 ; Simple test application that clears
