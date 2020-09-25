@@ -13,7 +13,7 @@
 ; Add this line in the project properties box, pic-as Global Options -> Additional options: 
 ;   -Wl,-Wl,-presetVec=0h
 ;
-    PROCESSOR 18F45K80
+    PROCESSOR   18F45K80
     PAGEWIDTH   132
     RADIX       dec
 
@@ -46,8 +46,9 @@
  config WRTC = OFF, WRTB = OFF, WRTD = OFF
  config EBTR0 = OFF, EBTR1 = OFF, EBTR2 = OFF, EBTR3 = OFF
  config EBTRB = OFF      ; Table Read Protect Boot (Disabled)
-
-
+;
+; Power On Reset entry point
+;
     PSECT   resetVec,class=CODE,reloc=2
     global  PORreset
 PORreset:
@@ -59,7 +60,7 @@ PORreset:
     global  ACTIONS_TABLE
 ACTIONS_TABLE:
     goto    ACTION1
-AT_Entry1:
+AT_SecondElement:
     goto    ACTION2
     goto    ACTION3
     goto    ACTION4
@@ -74,8 +75,13 @@ AT_Entry1:
     goto    ACTION13
     goto    ACTION14
     goto    ACTION15
-AT_End:
+AT_LastdElement:
     goto    ACTION16
+;
+; Macros that describe the shape of the branch table
+;
+#define ActionTableElementCount ((AT_LastdElement-ACTIONS_TABLE)/(AT_SecondElement-ACTIONS_TABLE))
+#define ActionTableElementSize (AT_SecondElement-ACTIONS_TABLE)
 ;
 ; Indirect branch to action
 ;
@@ -84,22 +90,22 @@ AT_End:
     PSECT   code
     global  Select_Action
 Select_Action:
-    movwf   PRODL,c
-    movlw   (AT_End-ACTIONS_TABLE)/(AT_Entry1-ACTIONS_TABLE)+1
-    cpfslt  PRODL,c
+    movwf   PRODL,c                 ; Save action seelctor.
+    movlw   ActionTableElementCount+1
+    cpfslt  PRODL,c                 ; Skip when action selector is withing the branch table.
     return
-    movlw   AT_Entry1-ACTIONS_TABLE
-    mulwf   PRODL,c
+    movlw   ActionTableElementSize
+    mulwf   PRODL,c                 ; Scale the selector by the action table element size to make the table offset.
     movlw   LOW(ACTIONS_TABLE)
-    addwf   PRODL,F,c
+    addwf   PRODL,F,c               ; Add offset to table start address (bits 7-0).
     movlw   HIGH(ACTIONS_TABLE)
-    addwfc  PRODH,W,c
+    addwfc  PRODH,W,c               ; Add offset to table start address (bits 15-8).
     movwf   PCLATH,c
     clrf    PCLATU,c
     movlw   (ACTIONS_TABLE>>16)
-    addwfc  PCLATU,F,c
+    addwfc  PCLATU,F,c              ; Add offset to table start address (bits 23-16).
     movf    PRODL,W,c
-    movwf   PCL,c
+    movwf   PCL,c                   ; Update the program counter to the branch table address.
 ;
 ;   Data used by main application
     PSECT   main_data,global,class=RAM,space=1,delta=1,noexec
@@ -113,16 +119,16 @@ Selector:   DS  1
     global  main
 main:
     banksel Selector
-    clrf    BANKMASK(Selector),b
+    clrf    BANKMASK(Selector),b    ; Start with first asction.
 AppLoop:
     movf    BANKMASK(Selector),W,b
-    call    Select_Action
+    call    Select_Action           ; Invoke action.
     banksel Selector
-    incf    BANKMASK(Selector),F,b
-    movlw   (AT_End-ACTIONS_TABLE)/(AT_Entry1-ACTIONS_TABLE)
-    cpfsgt  BANKMASK(Selector),b
-    goto    AppLoop
-    goto    main
+    incf    BANKMASK(Selector),F,b  ; Select next action.
+    movlw   ActionTableElementCount
+    cpfsgt  BANKMASK(Selector),b    ; Skip if next action is not within the table.
+    goto    AppLoop                 ; Loop for next action.
+    goto    main                    ; Start all over.
 ;
 ; Actions call using table lookup
 ;
