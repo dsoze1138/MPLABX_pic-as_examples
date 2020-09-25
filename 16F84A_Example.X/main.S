@@ -11,7 +11,7 @@
 ;   Example project for the PIC16F84A controller using the pic-as(v2.20) tool chain.
 ;
 ; Add this line in the project properties box, pic-as Global Options -> Additional options: 
-;   -Wa,-a -Wl,-pPor_Vec=0h,-pIsr_Vec=4h
+;   -Wa,-a -Wl,-pPor_Vec=0h,-pIsr_Vec=4h
 ;
 ;                           PIC16F84A
 ;                   +----------:_:----------+
