@@ -544,7 +544,7 @@
         <property key="summary-sha256" value="false"/>
         <property key="summary-xml" value="false"/>
         <property key="summary-xmlfull" value="false"/>
-        <appendMe value="-Wa,-a -Wl,-pStartCode=0h,-pOscCalVec=1ffh"/>
+        <appendMe value="-Wa,-a -Wl,-DCODE=2,-pStartCode=0h,-pOscCalVec=1ffh"/>
       </pic-as-global>
       <pic-as-linker>
         <property key="linker-callgraph" value="std"/>

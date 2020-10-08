@@ -12,7 +12,7 @@
 ;
 ; Add this line in the project properties box "pic-as Global Options -> Additional options": 
 ;
-;   -Wa,-a -Wl,-pResetVec=0h,-pIsr_vec=4h
+;   -Wa,-a -Wl,-DCODE=2,-pResetVec=0h,-pIsr_vec=4h
 ;
     PROCESSOR   10F320
     PAGEWIDTH   132
@@ -71,7 +71,7 @@ IsrExit:
     swapf   STATUS_save,W
     movwf   STATUS
     swapf   WREG_save,F
-    swapf   WREG_save,F
+    swapf   WREG_save,W
     retfie                      ; Return from interrupt
 ;
 ; Simple test application that clears

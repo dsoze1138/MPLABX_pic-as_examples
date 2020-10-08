@@ -547,7 +547,7 @@
         <property key="summary-sha256" value="false"/>
         <property key="summary-xml" value="false"/>
         <property key="summary-xmlfull" value="false"/>
-        <appendMe value=" -Wl,-presetVec=0h -Wa,-a -Wl,-Map=test.map "/>
+        <appendMe value=" -Wl,-DCODE=2,-presetVec=0h -Wa,-a -Wl,-Map=test.map "/>
       </pic-as-global>
       <pic-as-linker>
         <property key="linker-callgraph" value="std"/>
@@ -558,10 +558,8 @@
         <property key="linker-libraries" value=""/>
         <property key="linker-library-search-paths" value=""/>
         <property key="linker-maxi-chip" value="false"/>
-        <property key="linker-produce-elf-dwarf-output" value="true"/>
         <property key="linker-produce-intel-hex-extended-address-zero-output"
                   value="false"/>
-        <property key="linker-produce-intel-hex-output" value="false"/>
         <property key="linker-ram" value=""/>
         <property key="linker-reserve" value=""/>
         <property key="linker-rom" value=""/>

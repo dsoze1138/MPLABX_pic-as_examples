@@ -12,7 +12,7 @@
 ;
 ; Add this line in the project properties box "pic-as Global Options -> Additional options": 
 ;
-;   -Wa,-a -Wl,-pStartCode=0h,-pResetVec=0ffh
+;   -Wa,-a -Wl,-DCODE=2,-pStartCode=0h,-pResetVec=0ffh
 ;
     PROCESSOR   10F200
     PAGEWIDTH   132
