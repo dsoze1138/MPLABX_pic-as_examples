@@ -127,8 +127,8 @@ AppLoop:
     incf    BANKMASK(Selector),F,b  ; Select next action.
     movlw   ActionTableElementCount
     cpfsgt  BANKMASK(Selector),b    ; Skip if next action is not within the table.
-    goto    AppLoop                 ; Loop for next action.
-    goto    main                    ; Start all over.
+    bra     AppLoop                 ; Loop for next action.
+    bra     main                    ; Start all over.
 ;
 ; Actions call using table lookup
 ;
