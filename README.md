@@ -49,3 +49,10 @@ Added example of port of PIC18F2550 code from MPASM to pic-as(v2.20)
 
 Added example for PIC10F206
 
+## Date: 2020-August-24
+
+With base line PIC controllers there is a bug in the pic-as(v2.xx) toolchain.
+
+The workaround for the bug is to add: "-Wl,-DCODE=2" to the Additional options field, in the pic-as Linker category of the project properties.
+
+See: https://www.microchip.com/forums/FindPost/1150913
