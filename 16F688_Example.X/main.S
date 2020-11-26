@@ -2,9 +2,9 @@
 ; File:     main.S
 ; Target:   PIC16F688
 ; Author:   dan1138
-; Date:     2020-08-20
-; Compiler: pic-as(v2.20)
-; IDE:      MPLABX v5.40
+; Date:     2020-11-26
+; Compiler: pic-as(v2.31)
+; IDE:      MPLABX v5.45
 ;
 ; Description:
 ;
@@ -100,8 +100,8 @@ main:
     movwf   BANKMASK(OSCCON)    ; Set FRC to 4MHz
     BANKSEL TRISA
     movlw   0xFF
-    movwf   BANKMASK(TRISA)     ; Make PORTA outputs
-    movwf   BANKMASK(TRISC)     ; Make PORTC outputs
+    movwf   BANKMASK(TRISA)     ; Make PORTA inputs
+    movwf   BANKMASK(TRISC)     ; Make PORTC inputs
     BANKSEL ANSEL
     clrf    ANSEL               ; Trun off ADC analog inputs
     BANKSEL CMCON0
@@ -110,6 +110,8 @@ main:
 ;
 ; Application process init
 ;
+    BANKSEL TRISA
+    bcf     BANKMASK(TRISA),PORTA_RA2_POSITION ; Make RA2 an output
     BANKSEL PORTA
     movlw   0
 ;
