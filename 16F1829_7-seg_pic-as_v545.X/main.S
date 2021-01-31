@@ -132,18 +132,15 @@ IsrVec:
     banksel LATB
     movlw   0x00
     movwf   LATC                    ; Turn off all LED segments
-    movlw   (1<<4)
+    movlw   (1<<7)
     btfsc   LATB,7
     movlw   (1<<6)                  ; if DIGIT4 was on select DIGIT3
     btfsc   LATB,6
     movlw   (1<<5)                  ; if DIGIT3 was on select DIGIT2
     btfsc   LATB,5
     movlw   (1<<4)                  ; if DIGIT2 was on select DIGIT1
-    btfsc   LATB,4
-    movlw   (1<<7)                  ; if DIGIT1 was on select DIGIT4
     movwf   LATB                    ; Select LED display to be on
 
-    btfsc   LATB,4
     movf    Segments+0,W            ; Load DIGIT1 segments for display
     btfsc   LATB,5
     movf    Segments+1,W            ; Load DIGIT2 segments for display
@@ -156,18 +153,15 @@ IsrVec:
     banksel LATB
     movlw   0xFF
     movwf   LATC                    ; Turn off all LED segments
-    movlw   ~(1<<4)
+    movlw   ~(1<<7)
     btfss   LATB,7
     movlw   ~(1<<6)                 ; if DIGIT4 was on select DIGIT3
     btfss   LATB,6
     movlw   ~(1<<5)                 ; if DIGIT3 was on select DIGIT2
     btfss   LATB,5
     movlw   ~(1<<4)                 ; if DIGIT2 was on select DIGIT1
-    btfss   LATB,4
-    movlw   ~(1<<7)                 ; if DIGIT1 was on select DIGIT4
     movwf   LATB                    ; Select LED display to be on
 
-    btfss   LATB,4
     movf    Segments+0,W            ; Load DIGIT1 segments for display
     btfss   LATB,5
     movf    Segments+1,W            ; Load DIGIT2 segments for display
