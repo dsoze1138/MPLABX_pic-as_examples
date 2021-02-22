@@ -229,5 +229,23 @@ start:
 ;
 AppLoop:
     goto    AppLoop
+;
+; Build date and time
+;
+PSECT   BuildStamp,class=CODE,reloc=1
+    db 'b','u','i','l','t'
+    db  ' ','o','n',' '
+    IRPC ch,__DATE__
+  if 'ch' <> '"'
+    db 'ch'
+  endif
+    endm
+    db ' ','a','t',' '
+    IRPC ch,__TIME__
+  if 'ch' <> '"'
+    db 'ch'
+  endif
+    endm
+    db 0
 
     END     resetVec
