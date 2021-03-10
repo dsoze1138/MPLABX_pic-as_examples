@@ -35,10 +35,10 @@
     global  Counter
 Counter:    DS      2
 ;
-; Simple test application that clears
-; a RAM location to zero, then increments
-; that location until it reaches the
-; value 22. Then starts again.
+; Simple test application that implements a
+; delay function then sets GPIO bit GB2 high
+; calls the delay function, then sets GPIO 
+; bit GB2 low, calls the delay function then loops.
 ;
     PSECT   StartCode,class=CODE,delta=2
     global  Start, Delay, main, Loop
@@ -48,16 +48,16 @@ Start:
     goto    main
 ;
 Delay:
-    incfsz  Counter,F                   ; Increment the Counter value
+    incfsz  Counter,F                   ; Increment Counter value low 8-bits
     goto    Delay
-    incfsz  Counter+1,F                 ; Increment the Counter value
+    incfsz  Counter+1,F                 ; Increment Counter value high 8-bits
     goto    Delay
     retlw   0
 ;
 main:
     movlw   0b11011111  ; Select TIMER0 clock source as FOSC/4
     option
-    movlw   0b11111011  ;gp2 as output
+    movlw   0b11111011  ; GP2 as output
     tris    GPIO
 ;
 ; Toggle GPIO bit 2
