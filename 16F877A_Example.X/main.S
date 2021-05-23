@@ -8,7 +8,7 @@
 ;
 ; Description:
 ;
-;   Example project for the PIC16F877A controller using the pic-as(v2.20) tool chain.
+;   Example blinky project for the PIC16F877A controller using the pic-as(v2.20) tool chain.
 ;
 ; Add this line in the project properties box, pic-as Global Options -> Additional options:
 ;   -Wa,-a -Wl,-pPor_Vec=0h,-pIsr_Vec=4h
@@ -33,14 +33,6 @@
  config WRT = OFF        ; Flash Program Memory Write Enable bits (Write protection off; all program memory may be written to by EECON control)
  config CP = OFF         ; Flash Program Memory Code Protection bit (Code protection off)
 ;
-; Define macros to help with
-; bank selection
-;
-#define BANK0  (0x000)
-#define BANK1  (0x080)
-#define BANK2  (0x100)
-#define BANK3  (0x180)
-;
 ; Skip macros
 ;
   skipnc  MACRO
@@ -62,15 +54,12 @@
 ;   ***** SPECIAL VARIABLE DEFINITIONS
     PSECT   MainData,global,class=RAM,space=1,delta=1,noexec
 ;
-    GLOBAL  del1, del2, del3, del4, temp, count, recreg
+    GLOBAL  del1, del2, del3, del4
 ;
 del1:    DS      1
 del2:    DS      1
 del3:    DS      1
 del4:    DS      1
-temp:    DS      1
-count:   DS      1
-recreg:  DS      1
 ;
 ; Power-On-Reset entry point
 ;
@@ -118,19 +107,15 @@ IsrExit:
 ; Initialize the PIC hardware
 ;
 Start:
-    BANKSEL(PORTB)
-    clrf    PORTA
-    movlw   0x00
     BANKSEL(TRISB)
-    movwf   TRISB   ; PORT B OUTPUT
-    movwf   TRISC   ; PORT C OUTPUT
+    clrf    TRISB   ; PORT B OUTPUT
 
-    BANKSEL(ADCON1)     ;<= added so GPIOs will be digital
-    movlw   0x06        ;<= added so GPIOs will be digital
-    movwf   ADCON1      ;<= added so GPIOs will be digital
-    BANKSEL(CMCON)      ;<= added so GPIOs will be digital
-    movlw   0x07        ;<= added so GPIOs will be digital
-    movwf   CMCON       ;<= added so GPIOs will be digital
+    BANKSEL(ADCON1)
+    movlw   0x06
+    movwf   ADCON1
+    BANKSEL(CMCON)
+    movlw   0x07
+    movwf   CMCON
 
     BANKSEL(OPTION_REG)
     movlw   0xC7        ; TIMER0 clock source FOSC/4, TIMER0 uses prescaler, prescale 1:256
@@ -142,13 +127,12 @@ Start:
 
 LOOP:
     BANKSEL(PORTB)
-    movlw   0x00        ;<= change so zero will be written to PORTB
+    movlw   0x00
     movwf   PORTB
- ;   call    delay
+    call    delay
     movlw   0x0f
     movwf   PORTB
-    xorwf   PORTC,F     ;<= changed from movwf to xorwf so PORTC will change
- ;   call    delay
+    call    delay
     goto    LOOP
 
 delay:
