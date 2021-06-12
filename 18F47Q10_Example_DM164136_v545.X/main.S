@@ -33,7 +33,7 @@
 ;                                   DIP-40
 ;
 ; Description:
-;   LED blinky and UART demo application fo the DM164136 Curiosity HPC.
+;   LED blinky and UART demo application for the DM164136 Curiosity HPC.
 ;   Blinks the on board LED and sends a message to the virtual COM port.
 ;
 ; Add this line in the project properties box, pic-as Global Options -> Additional options: 
