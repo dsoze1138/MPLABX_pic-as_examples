@@ -3,12 +3,12 @@
 ; Target:   PIC10F220
 ; Author:   dan1138
 ; Date:     2020-10-08
-; Compiler: pic-as(v2.20)
-; IDE:      MPLABX v5.40
+; Compiler: pic-as(v2.31)
+; IDE:      MPLABX v5.45
 ;
 ; Description:
 ;
-;   Example project for the PIC10F200 controller using the pic-as(v2.20) tool chain.
+;   Example project for the PIC10F220 controller using the pic-as(v2.31) tool chain.
 ;
 ; Add this line in the project properties box "pic-as Global Options -> Additional options": 
 ;
