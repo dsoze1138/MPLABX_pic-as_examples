@@ -71,10 +71,10 @@ LowIsrVec:
 ;
 LowIsrHandler:
     BANKSEL PIE0
-    btfsc   TMR0IE,b        ;did the timer generate this interrupt?
-    btfss   TMR0IF,b
+    btfsc   PIE3,PIE3_TMR0IE_POSITION,b        ;did the timer generate this interrupt?
+    btfss   PIR3,PIR3_TMR0IF_POSITION,b
     bra     LowIsrExit      ;no - ignore
-    bcf     TMR0IF,b        ;yes - clear the interrupt flag
+    bcf     PIR3,PIR3_TMR0IF_POSITION,b        ;yes - clear the interrupt flag
 
     ;set a flag to say that the port should be incremented
     BANKSEL (bTimerEvent/8)
@@ -110,9 +110,9 @@ Start:
     movlw   128-1
     movwf   TMR0H,c         ; Set 8-bit timer reload count
     BANKSEL PIE0
-    bcf     TMR0IP,b
-    bcf     TMR0IF,b
-    bsf     TMR0IE,b
+    bcf     IPR3,IPR3_TMR0IP_POSITION,b
+    bcf     PIR3,PIR3_TMR0IF_POSITION,b
+    bsf     PIE3,PIE3_TMR0IE_POSITION,b
     bsf     T0CON0,T0CON0_EN_POSITION,c ; Start timer
     bsf     INTCON0,INTCON0_GIEH_POSITION,c   ; Enable all interrupts
     bsf     INTCON0,INTCON0_GIEL_POSITION,c
