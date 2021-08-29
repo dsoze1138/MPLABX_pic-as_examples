@@ -543,7 +543,7 @@
         <property key="instruction-set" value="std"/>
         <property key="summary-class" value="false"/>
         <property key="summary-file" value="false"/>
-        <property key="summary-hex" value="false"/>
+        <property key="summary-hex" value="true"/>
         <property key="summary-mem" value="true"/>
         <property key="summary-psect" value="true"/>
         <property key="summary-sha1" value="false"/>
