@@ -9,8 +9,8 @@
 ; Target:   PIC18F47K42
 ; Author:   dan1138
 ; Date:     2020-06-21
-; Compiler: pic-as(v2.20)
-; IDE:      MPLABX v5.40
+; Compiler: pic-as(v2.32)
+; IDE:      MPLABX v5.50
 ;
 ; Description:
 ;
@@ -71,10 +71,10 @@ LowIsrVec:
 ;
 LowIsrHandler:
     BANKSEL PIE0
-    btfsc   PIE3,PIE3_TMR0IE_POSITION,b        ;did the timer generate this interrupt?
+    btfsc   PIE3,PIE3_TMR0IE_POSITION,b ;did the timer generate this interrupt?
     btfss   PIR3,PIR3_TMR0IF_POSITION,b
-    bra     LowIsrExit      ;no - ignore
-    bcf     PIR3,PIR3_TMR0IF_POSITION,b        ;yes - clear the interrupt flag
+    bra     LowIsrExit                  ;no - ignore
+    bcf     PIR3,PIR3_TMR0IF_POSITION,b ;yes - clear the interrupt flag
 
     ;set a flag to say that the port should be incremented
     BANKSEL (bTimerEvent/8)
@@ -113,8 +113,8 @@ Start:
     bcf     IPR3,IPR3_TMR0IP_POSITION,b
     bcf     PIR3,PIR3_TMR0IF_POSITION,b
     bsf     PIE3,PIE3_TMR0IE_POSITION,b
-    bsf     T0CON0,T0CON0_EN_POSITION,c ; Start timer
-    bsf     INTCON0,INTCON0_GIEH_POSITION,c   ; Enable all interrupts
+    bsf     T0CON0,T0CON0_EN_POSITION,c     ; Start timer
+    bsf     INTCON0,INTCON0_GIEH_POSITION,c ; Enable all interrupts
     bsf     INTCON0,INTCON0_GIEL_POSITION,c
     goto    main
 ;
