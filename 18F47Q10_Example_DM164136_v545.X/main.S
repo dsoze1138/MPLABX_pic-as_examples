@@ -40,7 +40,7 @@
 ;   -Wa,-a -Wl,-presetVec=0h,-phi_int_vec=08h,-plo_int_vec=18h
 ;
 ; Notes:
-;   The MPLABX v5.45 tool pack version 1.2.293 for the PKOB4 breaks the virvual COM 
+;   The MPLABX v5.45 tool pack version 1.2.293 for the PKOB4 breaks the virtual COM 
 ;   implementation in the PKOB4 controller. Tool pack version 1.1.166 works correctly.
 ;
     PROCESSOR   18F47Q10
