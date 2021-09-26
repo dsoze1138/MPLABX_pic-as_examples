@@ -43,11 +43,11 @@
 ; CONFIG2
   CONFIG  WRT = OFF, STVREN = ON, BORV = LO, LPBOR = OFF, LVP = ON
 ;
-; Macros for deprecated opcode
+; Macros for deprecated opcodes TRIS and OPTION
 ;
 ; Warning:  The MPLAB simulator does not support these opcodes for the PIC16F15xx controllers.
 ;           They do actually work in the PIC16F1503 controller tested.
-;           Likely they work in all of the controller in the PIC16F15xx family
+;           Likely they work in all the controllers in the PIC16F15xx family
 ;           but you should verify this for your specific target.
 ;
 _tris MACRO PORT
