@@ -56,3 +56,8 @@ With base line PIC controllers there is a bug in the pic-as(v2.xx) toolchain.
 The workaround for the bug is to add: "-Wl,-DCODE=2" to the Additional options field, in the pic-as Linker category of the project properties.
 
 See: https://www.microchip.com/forums/FindPost/1150913
+
+## Date: 2021-September-28
+
+Add an example for the PIC16F1503.
+
