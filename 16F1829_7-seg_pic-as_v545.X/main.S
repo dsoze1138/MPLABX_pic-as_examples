@@ -27,7 +27,7 @@
 ;   Code tested using the DM164130-9 PICkit 3 Low Pin Count Demo Board.
 ;
 ;   This is code to demonstrate one method to multiplex
-;   two digits in two 7-segment LED displays.
+;   four digits in a 7-segment LED display module.
 ;
 ;   For a common cathode LED display:
 ;     A segment is ON when the SEG(A-G) output is HIGH.
@@ -357,12 +357,12 @@ SegTable:
     RETLW   0b00000111  ; mask for digit 7
     RETLW   0b01111111  ; mask for digit 8
     RETLW   0b01101111  ; mask for digit 9
-    RETLW   0b01110111 
-    RETLW   0b01111100 
-    RETLW   0b00111001 
-    RETLW   0b01011110 
-    RETLW   0b01111001 
-    RETLW   0b01110001  
+    RETLW   0b01110111  ; mask for digit A
+    RETLW   0b01111100  ; mask for digit b
+    RETLW   0b00111001  ; mask for digit C
+    RETLW   0b01011110  ; mask for digit d
+    RETLW   0b01111001  ; mask for digit E
+    RETLW   0b01110001  ; mask for digit F
 ;
 ; Declare Power-On-Reset entry point
 ;
