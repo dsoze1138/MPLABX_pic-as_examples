@@ -13,8 +13,17 @@
 ; CONFIG1H
   CONFIG  FOSC = IRC            ; Oscillator Selection bits (Internal RC oscillator)
 ;
-; The "CONFIG PLLEN = " has no valid syntax that the pic-as(v2.32) assembler likes
-;  CONFIG  PLLEN = OFF           ; 4 X PLL Enable bit (PLL is under software control)
+; Because xc.inc defins the PLLEN symbol the CONFIG syntax fails.
+;
+; Microchip wants xc.inc "included" before the config directives.
+;
+; So here is a workaround hack:
+#undef PLLEN = OFF
+;
+  CONFIG  PLLEN = OFF           ; 4 X PLL Enable bit (PLL is under software control)
+;
+; This define is from the pic18f14k22.inc file, line 4139:
+#define PLLEN BANKMASK(OSCTUNE), 6, a
 ;
   CONFIG  PCLKEN = ON           ; Primary Clock Enable bit (Primary clock enabled)
   CONFIG  FCMEN = OFF           ; Fail-Safe Clock Monitor Enable (Fail-Safe Clock Monitor disabled)
