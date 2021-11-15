@@ -1,5 +1,5 @@
 ; 
-; Code example based section 3.  A Basic Example For PIC18 Devices
+; Code example based on section 3.  A Basic Example For PIC18 Devices
 ;
 ; From document: http://ww1.microchip.com/downloads/en/DeviceDoc/XC8-PIC-Assembler-UG-for-EE-50002994A.pdf
 ;
