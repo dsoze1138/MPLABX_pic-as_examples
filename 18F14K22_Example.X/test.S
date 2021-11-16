@@ -13,7 +13,7 @@
 ; CONFIG1H
   CONFIG  FOSC = IRC            ; Oscillator Selection bits (Internal RC oscillator)
 ;
-; Because xc.inc defins the PLLEN symbol the CONFIG syntax fails.
+; Because xc.inc defines the PLLEN symbol the CONFIG syntax fails.
 ;
 ; Microchip wants xc.inc "included" before the config directives.
 ;
