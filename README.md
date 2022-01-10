@@ -61,3 +61,7 @@ See: https://www.microchip.com/forums/FindPost/1150913
 
 Add an example for the PIC16F1503.
 
+## Date: 2022-January-10
+
+Modify 10F200_Example to test skip macros.
+

@@ -17,10 +17,29 @@
     PROCESSOR   10F200
     PAGEWIDTH   132
     RADIX       dec
+    EXPAND
 ;
 ; Include target specific definitions for special function registers
 ;
 #include <xc.inc>
+;
+; Skip macros
+;
+skipnc  MACRO
+    btfsc   STATUS,STATUS_C_POSITION
+  ENDM
+
+skipc  MACRO
+    btfss   STATUS,STATUS_C_POSITION
+  ENDM
+
+skipnz  MACRO
+    btfsc   STATUS,STATUS_Z_POSITION
+  ENDM
+
+skipz  MACRO
+    btfss   STATUS,STATUS_Z_POSITION
+  ENDM
 ;
 ; Set the configuration word
 ;
@@ -47,7 +66,7 @@ Loop:
     incf    Counter,F                   ; Increment the Counter value
     movf    Counter,W                   ; Put the Counter value in WREG
     xorlw   22                          ; Test the value, set ZERO flag when equal
-    btfss   STATUS,STATUS_Z_POSITION    ; skip is ZERO flag set
+    skipz                               ; skip is ZERO flag set
     goto    Loop                        ; Loop when not equal
 ;
     goto    Start
