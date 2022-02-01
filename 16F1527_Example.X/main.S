@@ -7,6 +7,10 @@
 ; Description:
 ;
 ;   Example appliction for PIC16F1527.
+;   Toggle LED1 one time after a spin wait, about 250 milliseconds.
+;   Toggle LED2 once after TIMER0 overflows 10 times, about 330 milliseconds.
+;   The flashing of the LED will drift in and out of phase.
+;   
 ;
 ;                                                           PIC16F1527
 ;             +---------------+            +---------------+            +---------------+            +---------------+
@@ -22,8 +26,8 @@
 ;      3v3 -> : 10 VDD        :     3v3 -> : 26 VDD        : ICD_PGC <> : 42 RB6/PGC    :         <> : 58 RD0        :
 ;          <> : 11 RF7        :         <> : 27 RA5        :         <> : 43 RB5        :         <> : 59 RE7        :
 ;          <> : 12 RF6        :         <> : 28 RA4        :         <> : 44 RB4        :         <> : 60 RE6        :
-;          <> : 13 RF5        :         <> : 29 RC1        :         <> : 45 RB3        :         <> : 61 RE5        :
-;          <> : 14 RF4        :     LED <> : 30 RC0        :         <> : 46 RB2        :         <> : 62 RE4        :
+;          <> : 13 RF5        :    LED2 <> : 29 RC1        :         <> : 45 RB3        :         <> : 61 RE5        :
+;          <> : 14 RF4        :    LED1 <> : 30 RC0        :         <> : 46 RB2        :         <> : 62 RE4        :
 ;          <> : 15 RF3        :         <> : 31 RC6        :         <> : 47 RB1        :         <> : 63 RE3        :
 ;          <> : 16 RF2        :         <> : 32 RC7        :         <> : 48 RB0        :         <> : 64 RE2        :
 ;             +---------------+            +---------------+            +---------------+            +---------------+
@@ -56,18 +60,18 @@
 ResetVector:
     goto    Start
 ;
-;
+; Interrupt vector
 ;
     PSECT   ISR_Vec,class=CODE,delta=2
     global  ISR
 ISR:
-    bcf     INTCON,INTCON_TMR0IF_POSITION
     retfie
 ;
 ; Application start
 ;
     PSECT   code
 Start:
+    clrf    INTCON      ; Disable all interrupts
     banksel OSCCON
     movlw   0x3a        ; System oscillator set to 8MHz
     movwf   OSCCON
@@ -85,8 +89,10 @@ Start:
     banksel TMR0
     clrf    TMR0
     bcf     INTCON,INTCON_TMR0IF_POSITION
-    bsf     INTCON,INTCON_TMR0IE_POSITION
-    bsf     INTCON,INTCON_GIE_POSITION
+
+    clrf    FSR1L
+    movlw   10
+    subwf   FSR1L,F
     goto    AppLoop
 ;
 ; Application loop
@@ -111,14 +117,25 @@ Delay_1:
     incfsz  FSR0H,F
     goto    Delay_1
     return
+;
+; Toggle LED2 when TIMER0 overflows
+;
 Delay_2:
     btfss   INTCON,INTCON_TMR0IF_POSITION
     goto    Delay_3
     bcf     INTCON,INTCON_TMR0IF_POSITION
+    movlw   10
+    incfsz  FSR1L,F
+    goto    Delay_4
+    subwf   FSR1L,F
     movlw   2
     xorwf   LATC,F
     return
 Delay_3:
+    nop
+    nop
+    nop
+Delay_4:
     nop
     nop
     return
