@@ -9,7 +9,7 @@
 ;   Example appliction for PIC16F1527.
 ;   Toggle LED1 one time after a spin wait, about 250 milliseconds.
 ;   Toggle LED2 once after TIMER0 overflows 10 times, about 330 milliseconds.
-;   The flashing of the LED will drift in and out of phase.
+;   The flashing of the LEDs will drift in and out of phase.
 ;   
 ;
 ;                                                           PIC16F1527
