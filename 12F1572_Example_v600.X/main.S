@@ -10,7 +10,7 @@
 ;
 ;   Example project for the PIC12F1572 controller using the pic-as(v2.36) tool chain.
 ;
-;   This application shows a bug in how the pic-as(v2.35) builds the opcode for the BRA statement.
+;   This application shows a bug in how the pic-as(v2.36) builds the opcode for the BRA statement.
 ;   Specifically here the branch target is out of reach. This should cause the assember to
 ;   assert an error diagnostic. 
 ;
