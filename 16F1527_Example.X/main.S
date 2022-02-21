@@ -77,7 +77,7 @@ Start:
     movwf   OSCCON
 
     banksel OPTION_REG
-    movlw   0xD7        ; Set TIMER0 clock source to FOSC/4, TIMER0 overflows ever 32.768 milliseconds
+    movlw   0xD7        ; Set TIMER0 clock source to FOSC/4, TIMER0 overflows every 32.768 milliseconds
     movwf   OPTION_REG
 
     banksel TRISC
@@ -100,7 +100,7 @@ Start:
 AppLoop:
     banksel LATC
     movlw   1
-    xorwf   LATC,F
+    xorwf   LATC,F      ; Toggle LED1
     call    Delay
     goto    AppLoop     ;loop forever
 ;
@@ -129,7 +129,7 @@ Delay_2:
     goto    Delay_4
     subwf   FSR1L,F
     movlw   2
-    xorwf   LATC,F
+    xorwf   LATC,F      ; Toggle LED2
     return
 Delay_3:
     nop
