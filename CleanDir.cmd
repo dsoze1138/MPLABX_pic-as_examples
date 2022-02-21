@@ -31,6 +31,8 @@
 @if exist funclist          del   /f /q funclist
 @if exist nbproject\Package-*.bash del   /f /q nbproject\Package-*.bash
 @if exist nbproject\Makefile-* del   /f /q nbproject\Makefile-*
+@if exist *.lst             del   /f /q *.lst
+@if exist *.err             del   /f /q *.err
 @goto CleanDone
 :Clean8
 @if exist funclist          del   /f /q funclist
