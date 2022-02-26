@@ -50,6 +50,10 @@
 @if exist *.hex             del   /f /q *.hex
 @if exist *.err             del   /f /q *.err
 @if exist *.o               del   /f /q *.o
+@if exist *.d               del   /f /q *.d
+@if exist *.cmf             del   /f /q *.cmf
+@if exist startup.as        del   /f /q startup.as
+@FOR /F  %%i IN ('dir /b *.mcp') DO @if exist %%~ni.as del   /f /q %%~ni.as
 :CleanDone
 @popd
 @set FOLDER2CLEAN=
