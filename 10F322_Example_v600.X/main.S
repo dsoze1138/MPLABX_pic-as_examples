@@ -10,8 +10,9 @@
 ;
 ;   Example project for the PIC10F322 controller using the pic-as(v2.36) tool chain.
 ;
-; Add this line in the project properties box "pic-as Global Options -> Additional options": 
+; In the project properties box "pic-as Global Options -> Additional options" 
 ;
+; Add this line: 
 ;   -Wa,-a -Wl,-DCODE=2,-pResetVec=0h,-pIsr_vec=4h
 ;
     PROCESSOR   10F322
