@@ -8,7 +8,7 @@
 ;
 ; Description:
 ;
-;   Example project for the PIC10F320 controller using the pic-as(v2.20) tool chain.
+;   Example project for the PIC10F322 controller using the pic-as(v2.36) tool chain.
 ;
 ; Add this line in the project properties box "pic-as Global Options -> Additional options": 
 ;
