@@ -94,7 +94,6 @@ loop:
     goto    loop
 
 delay:
-    banksel COUNT1
 inner:
     decfsz  COUNT1,1
     goto    inner
@@ -102,5 +101,4 @@ inner:
     goto    inner
     return
 
-    
     end     ResetVector
