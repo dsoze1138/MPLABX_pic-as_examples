@@ -39,8 +39,9 @@
 ; Declare one byte in RAM
 ;
     PSECT   MainData,global,class=RAM,space=1,delta=1,noexec
-    global  Counter
-Counter:    DS      1
+    global  COUNT1,COUNT2
+COUNT1:    DS      1
+COUNT2:    DS      1
 ;
 ; Reset vector
 ;
@@ -75,22 +76,31 @@ IsrExit:
     swapf   WREG_save,W
     retfie                      ; Return from interrupt
 ;
-; Simple test application that clears
-; a RAM location to zero, then increments
-; that location until it reaches the
-; value 22. Then starts again.
+; Simple test application that toggle PORTA bit 0
 ;
     PSECT   StartCode,class=CODE,delta=2
     global  Start
 Start:
-    clrf    Counter
-Loop:
-    incf    Counter,F                   ; Increment the Counter value
-    movf    Counter,W                   ; Put the Counter value in WREG
-    xorlw   22                          ; Test the value, set ZERO flag when equal
-    btfss   STATUS,STATUS_Z_POSITION    ; skip is ZERO flag set
-    goto    Loop                        ; Loop when not equal
-;
-    goto    Start
+; PORTS
+    clrf    PORTA
+    clrf    LATA
+    clrf    ANSELA
+    movlw   00h ; RA0/RA1=OUT
+    movwf   TRISA
+    movlw   01h
+loop:
+    xorwf   LATA,1
+    call    delay
+    goto    loop
 
+delay:
+    banksel COUNT1
+inner:
+    decfsz  COUNT1,1
+    goto    inner
+    decfsz  COUNT2,1
+    goto    inner
+    return
+
+    
     end     ResetVector
