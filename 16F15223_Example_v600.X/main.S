@@ -7,7 +7,7 @@
 ; IDE:      MPLABX v6.00
 ;
 ; Description:
-;
+;   Example of how to declare a byte in RAM, clear the value to zero, then increment the value in a loop.
 ;
 ; Add this line in the project properties box, pic-as Global Options -> Additional options: 
 ;    -Wl,-DCODE=2 -Wl,-pPor_Vec=0h,-pIsr_Vec=4h
@@ -125,14 +125,24 @@ Start:
 ; Main application data
 ;
     PSECT   MainData,global,class=RAM,space=1,delta=1,noexec
+    global  Count
+Count:  ds  1
 ;
 ; Main application code
 ;
     PSECT   MainCode,global,class=CODE,delta=2
 ;
+; Initialize the application
 ;
 main:
+    banksel Count
+    clrf    Count
+;
+; Application process loop
+;
 AppLoop:
+    banksel Count
+    incf    Count,F
     goto    AppLoop
 ;
 ; Declare Power-On-Reset entry point
