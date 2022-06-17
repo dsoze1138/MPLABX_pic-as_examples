@@ -22,6 +22,7 @@
 ; Include target specific definitions for special function registers
 ;
 #include <xc.inc>
+;<editor-fold defaultstate="collapsed" desc="Skip macros">
 ;
 ; Skip macros
 ;
@@ -40,6 +41,7 @@ skipnz  MACRO
 skipz  MACRO
     btfss   STATUS,STATUS_Z_POSITION
   ENDM
+;</editor-fold>
 ;
 ; Set the configuration word
 ;
