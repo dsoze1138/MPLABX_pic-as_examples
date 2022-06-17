@@ -31,6 +31,8 @@
 @if exist funclist          del   /f /q funclist
 @if exist nbproject\Package-*.bash del   /f /q nbproject\Package-*.bash
 @if exist nbproject\Makefile-* del   /f /q nbproject\Makefile-*
+@if exist *.lst             del   /f /q *.lst
+@if exist *.err             del   /f /q *.err
 @goto CleanDone
 :Clean8
 @if exist funclist          del   /f /q funclist
@@ -48,6 +50,10 @@
 @if exist *.hex             del   /f /q *.hex
 @if exist *.err             del   /f /q *.err
 @if exist *.o               del   /f /q *.o
+@if exist *.d               del   /f /q *.d
+@if exist *.cmf             del   /f /q *.cmf
+@if exist startup.as        del   /f /q startup.as
+@FOR /F  %%i IN ('dir /b *.mcp') DO @if exist %%~ni.as del   /f /q %%~ni.as
 :CleanDone
 @popd
 @set FOLDER2CLEAN=

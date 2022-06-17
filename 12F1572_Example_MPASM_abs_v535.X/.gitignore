@@ -1,0 +1,27 @@
+# Microchip MPLABX
+# =========================
+*.d
+*.pre
+*.p1
+*.lst
+*.err
+*.hex
+*.sym
+*.obj
+*.o
+*.sdb
+*.obj.dmp
+*.map
+html/
+parts/
+nbproject/private/
+nbproject/Package-*.bash
+nbproject/Makefile-*
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+funclist
+disassembly/
