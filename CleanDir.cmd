@@ -33,6 +33,7 @@
 @if exist nbproject\Makefile-* del   /f /q nbproject\Makefile-*
 @if exist *.lst             del   /f /q *.lst
 @if exist *.err             del   /f /q *.err
+@if exist *.map             del   /f /q *.map
 @goto CleanDone
 :Clean8
 @if exist funclist          del   /f /q funclist
