@@ -65,3 +65,7 @@ Add an example for the PIC16F1503.
 
 Modify 10F200_Example to test skip macros.
 
+## Date: 2022-October-20
+
+Add PIC16F877A example to show a method using the HC-SR04 ultrasonic range finder with an HD44780 LCD character display module.
+

@@ -1,0 +1,65 @@
+## SCL Builder Setup File: Do not edit!!
+
+## VERSION: MPLAB X
+## FORMAT:  v2.00.01
+## DEVICE:  PIC16F877A
+
+## PINREGACTIONS
+cyc
+No Repeat
+--
+&
+## ADVPINREGACTIONS
+--
+&
+--
+COND2
+Any
+
+
+
+0
+cyc
+
+--
+&
+## CLOCK
+&
+## STIMULUSFILE
+&
+## RESPONSEFILE
+&
+## ASYNCH
+Pin
+CCP1
+Set Low
+
+
+-1
+--
+Pin
+CCP1
+Pulse High
+100 cyc
+
+-1
+--
+Pin
+CCP1
+Pulse High
+1000 cyc
+
+-1
+--
+Pin
+CCP1
+Pulse High
+583 cyc
+Time of flight for 10cm
+-1
+--
+&
+## ADVANCEDSCL
+
+0
+&
