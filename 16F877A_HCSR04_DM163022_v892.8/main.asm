@@ -3,15 +3,15 @@
 ; Target:   PIC16F877A
 ; Author:   dan1138
 ; Date:     2022-10-20
-; Compiler: pic-as(v2.40)
-; IDE:      MPLABX v5.50
+; Compiler: MPASMWIN v5.51
+; IDE:      MPLAB v8.98
 ;
 ; Description:
 ;
 ;   Example of using HC-SR04 and LCD with the DM163022 (PICDEM2+) board.
 ;
-; Add this line in the project properties box, pic-as Global Options -> Additional options:
-;   -Wa,-a -Wl,-pPor_Vec=0h,-pIsr_Vec=4h,-pMainData=20h
+; 
+; 
 ;
 ;                              PIC16F877A
 ;                      +----------:_:----------+
@@ -38,47 +38,48 @@
 ;                      +-----------------------:
 ;                               DIP-40
 ;
-;
+    ERRORLEVEL  -302        ; Supress Register in operand not in bank 0 warning
     PROCESSOR   16F877A
-    PAGEWIDTH   132
+    LIST        c=132,n=0
     RADIX       DEC
 ;
-#include <xc.inc>
+#include <p16f877a.inc>
 
 ; PIC16F877A Configuration Bit Settings
 
 ; 'C' source line config statements
 
 ; CONFIG
- config FOSC = HS        ; Oscillator Selection bits (HS oscillator)
- config WDTE = OFF       ; Watchdog Timer Enable bit (WDT disabled)
- config PWRTE = OFF      ; Power-up Timer Enable bit (PWRT disabled)
- config BOREN = OFF      ; Brown-out Reset Enable bit (BOR disabled)
- config LVP = OFF        ; Low-Voltage (Single-Supply) In-Circuit Serial Programming Enable bit (RB3 is digital I/O, HV on MCLR must be used for programming)
- config CPD = OFF        ; Data EEPROM Memory Code Protection bit (Data EEPROM code protection off)
- config WRT = OFF        ; Flash Program Memory Write Enable bits (Write protection off; all program memory may be written to by EECON control)
- config CP = OFF         ; Flash Program Memory Code Protection bit (Code protection off)
+ __CONFIG _FOSC_HS & _WDTE_OFF &_PWRTE_OFF & _BOREN_OFF & _LVP_OFF & _CPD_OFF & _WRT_OFF & _CP_OFF
+
+
+
+
+
+
+
 ;
-; Skip macros
+; 
 ;
-skipnc  MACRO
-    btfsc   STATUS,STATUS_C_POSITION
-  ENDM
 
-skipc  MACRO
-    btfss   STATUS,STATUS_C_POSITION
-  ENDM
 
-skipnz  MACRO
-    btfsc   STATUS,STATUS_Z_POSITION
-  ENDM
 
-skipz  MACRO
-    btfss   STATUS,STATUS_Z_POSITION
-  ENDM
-clrc   MACRO
-    bcf     STATUS,STATUS_C_POSITION
-  ENDM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;
 ; Define macros to help with
 ; bank selection
@@ -92,20 +93,20 @@ clrc   MACRO
 #define SPEED_OF_SOUND (343)
 ;
 ; Application data space
-    PSECT   MainData,global,class=RAM,space=1,delta=1,noexec
+MainData    UDATA   0x20
 
     GLOBAL IdleTick,mBits,BCD_out,A_reg,B_reg,D_reg
-IdleTick:   ds 1            ; used in idle loop to count time for LED flashing
-mBits:      ds 1            ; used by Math functions, used for bit counts
-BCD_out:    ds 3            ; used for 5 byte BCD outpt, overlaps with register A
-A_reg:      ds 2            ; used by Math functions, 16-bit input  register A
-B_reg:      ds 0            ; used by Math functions, 16-bit input  register B, not register shares 16-bits with the output register
-D_reg:      ds 4            ; used by Math functions, 32-bit output register D
+IdleTick:   res 1            ; used in idle loop to count time for LED flashing
+mBits:      res 1            ; used by Math functions, used for bit counts
+BCD_out:    res 3            ; used for 5 byte BCD outpt, overlaps with register A
+A_reg:      res 2            ; used by Math functions, 16-bit input  register A
+B_reg:                       ; used by Math functions, 16-bit input  register B, not register shares 16-bits with the output register
+D_reg:      res 4            ; used by Math functions, 32-bit output register D
 ;
 ;
 ; Power-On-Reset entry point
 ;
-    PSECT   Por_Vec,global,class=CODE,delta=2
+Por_Vec     CODE    0x0000
     global  resetVec
 resetVec:
     pagesel(Start)
@@ -113,25 +114,25 @@ resetVec:
 
 ;
 ;   Data in common space use by LCD implementation
-    PSECT   LCD_Data,global,class=COMMON,space=1,delta=1,noexec
+LCD_Data    UDATA_SHR
 ;
     GLOBAL  LCD_Temp
 ;
-LCD_Temp:       DS  1
+LCD_Temp:       res  1
 
 ;
 ;   Data in common space use by interrupt handler to save context
-    PSECT   Isr_Data,global,class=COMMON,space=1,delta=1,noexec
+Isr_Data    UDATA_SHR
 ;
     GLOBAL  WREG_save,STATUS_save,PCLATH_save,TimeOfFlight
 ;
-WREG_save:      DS  1
-STATUS_save:    DS  1
-PCLATH_save:    DS  1
-TimeOfFlight:   DS  2
+WREG_save:      res  1
+STATUS_save:    res  1
+PCLATH_save:    res  1
+TimeOfFlight:   res  2
 ;
 ;   Interrupt vector and handler
-    PSECT   Isr_Vec,global,class=CODE,delta=2
+Isr_Vec     CODE    0x0004
     GLOBAL  IsrVec
 ;
 IsrVec:
@@ -147,20 +148,20 @@ IsrHandler:
 ;
 ; CCP1 capture interrupt handler
 ;
-    btfss   PIR1,PIR1_CCP1IF_POSITION
+    btfss   PIR1,CCP1IF
     goto    Isr_CCP1_done
-    bcf     PIR1,PIR1_CCP1IF_POSITION
-    btfsc   CCP1CON,0                   ; skip if leading edge detected
+    bcf     PIR1,CCP1IF
+    btfsc   CCP1CON,0                   ; skp if leading edge detected
     goto    Isr_CCP1_T0
     movf    TimeOfFlight,W              ; compute TIMER1 counts
     subwf   CCPR1L,W                    ; from leading edge
     movwf   TimeOfFlight                ; to trailing edge.
     movf    TimeOfFlight+1,W
-    skipc
+    skpc
     incf    TimeOfFlight+1,W
     subwf   CCPR1H,W
     movwf   TimeOfFlight+1
-    bcf     T1CON,T1CON_TMR1ON_POSITION ; stop TIMER1 when trailing edge of range pulse is captured
+    bcf     T1CON,TMR1ON                ; stop TIMER1 when trailing edge of range pulse is captured
     goto    Isr_CCP1_done
 Isr_CCP1_T0:
     movf    CCPR1L,W                    ; save start time of leading edge
@@ -172,14 +173,14 @@ Isr_CCP1_done:
 ;
 ; TIMER1 interrupt handler
 ;
-    btfss   PIR1,PIR1_TMR1IF_POSITION
+    btfss   PIR1,TMR1IF
     goto    Isr_TMR1_done
-    bcf     PIR1,PIR1_TMR1IF_POSITION
+    bcf     PIR1,TMR1IF
     clrf    TMR1H
     clrf    TMR1L
     movlw   0x05                        ; setup CCP1 to capture leading edge of range pulse
     movwf   CCP1CON
-    bcf     PIR1,PIR1_CCP1IF_POSITION
+    bcf     PIR1,CCP1IF
     bsf     PORTC,5                     ; Set HC-SR04 trigger high
     nop                                 ; delay +1  microsecond
     nop                                 ; delay +2  microsecond
@@ -200,10 +201,10 @@ IsrExit:
     movwf   STATUS
     swapf   WREG_save,F
     swapf   WREG_save,W
-    retfie                      ; Return from interrupt
+    retfie                              ; Return from interrupt
 ;
 ;   Section used for main code
-    PSECT   MainCode,global,class=CODE,delta=2
+MainCode    CODE
 ;
 ; Initialize the PIC hardware
 ;
@@ -217,8 +218,8 @@ Start:
     clrf    PORTB
     clrf    PORTC
     banksel(TRISB)
-    clrf    TRISB               ; PORT B OUTPUTS
-    bcf     TRISC,TRISC_TRISC5_POSITION
+    clrf    TRISB                       ; PORT B OUTPUTS
+    bcf     TRISC,TRISC5
 ;
 ; Make all GPIO pins digital I/O
 ;
@@ -232,23 +233,23 @@ Start:
 ; Setup TIMER0
 ;
     banksel(OPTION_REG)
-    movlw   0xC7                ; TIMER0 clock source FOSC/4, TIMER0 uses prescaler, prescale 1:256
+    movlw   0xC7                        ; TIMER0 clock source FOSC/4, TIMER0 uses prescaler, prescale 1:256
     movwf   OPTION_REG
 ;
 ; Setup TIMER1, CCP1 to capture HC-SR04 range pulse
 ;
     banksel(PIE1)
-    bcf     PIE1,PIE1_TMR1IE_POSITION
-    bcf     PIE1,PIE1_CCP1IE_POSITION
+    bcf     PIE1,TMR1IE
+    bcf     PIE1,CCP1IE
     banksel(T1CON)
-    clrf    T1CON               ; TIMER1 off, prescale 1:1, clock FOSC/4
-    clrf    CCP1CON             ; CCP1 off
+    clrf    T1CON                       ; TIMER1 off, prescale 1:1, clock FOSC/4
+    clrf    CCP1CON                     ; CCP1 off
     clrf    TMR1H
     clrf    TMR1L
     clrf    CCPR1H
     clrf    CCPR1L
-    bcf     PIR1,PIR1_TMR1IF_POSITION
-    bcf     PIR1,PIR1_CCP1IF_POSITION
+    bcf     PIR1,TMR1IF
+    bcf     PIR1,CCP1IF
     goto    AppInit
 ;
 ; LCD functions
@@ -265,7 +266,7 @@ Start:
 #define LINE_ONE    0x00
 #define LINE_TWO    0x40
 ;
-;*****************************************************************
+;**********************************************************************
 ; Subroutine Name: Delay_4us, Delay_20us, Delay_40us
 ; Function: provides a delay for 4, 20 or 40 microseconds
 ;           Code relies on a 4MHz system oscillator
@@ -274,7 +275,7 @@ Start:
 ;
 ; Outputs: none
 ;
-;*****************************************************************
+;**********************************************************************
 
 Delay_40us:
     call    Delay_20us              ; Wait at least 40 microseconds
@@ -285,7 +286,7 @@ Delay_20us:                         ; for command to complete.
     call    Delay_4us
     goto    Delay_4us
 ;
-;*****************************************************************
+;**********************************************************************
 ; Subroutine Name: Delay_5ms
 ; Function: Provides a delay for at least 5 milliseconds
 ;           Code relies on a 4MHz system oscillator
@@ -296,7 +297,7 @@ Delay_20us:                         ; for command to complete.
 ;
 ; Uses:    WREG, STATUS
 ;
-;*****************************************************************
+;**********************************************************************
 Delay_5ms:
     call    Dly0
     call    Dly0
@@ -305,12 +306,12 @@ Dly0:
 Dly1:
     call    Delay_4us
     addlw   -1
-    skipz
+    skpz
     goto    Dly1
 Delay_4us:
     return
 ;
-;*****************************************************************
+;**********************************************************************
 ; Subroutine Name: LCD_POR_Delay
 ; Function: provides a delay for at least 15 milliseconds
 ;
@@ -320,13 +321,13 @@ Delay_4us:
 ;
 ; Uses:    WREG, STATUS
 ;
-;*****************************************************************
+;**********************************************************************
 LCD_POR_Delay:
     call    Delay_5ms
     call    Delay_5ms
     goto    Delay_5ms
 ;
-;*****************************************************************
+;**********************************************************************
 ; Subroutine Name: LCD_Init
 ; Function: Initialize the LCD interface.
 ;
@@ -336,7 +337,7 @@ LCD_POR_Delay:
 ;
 ; Uses:    WREG, STATUS
 ;
-;*****************************************************************
+;**********************************************************************
 LCD_Init:
     call    Delay_4us       ; Used to test the timing 
     call    Delay_40us      ; of the delay functions
@@ -402,7 +403,7 @@ LCD_Init:
 
     return
 ;
-;*****************************************************************
+;**********************************************************************
 ; Subroutine Name: LCD_WriteCommand
 ; Function: Set LCD_RS to command mode
 ;           Write command byte to PORTB
@@ -415,7 +416,7 @@ LCD_Init:
 ;
 ; Uses:    WREG, STATUS
 ;
-;*****************************************************************
+;**********************************************************************
 LCD_WriteCommand:
     banksel(LCD_PORT)
     bcf     LCD_RW          ; Assert LCD_RW low
@@ -423,7 +424,7 @@ LCD_WriteCommand:
     call    LCD_Write1
     goto    Delay_5ms
 ;
-;*****************************************************************
+;**********************************************************************
 ; Subroutine Name: LCD_WriteData
 ; Function: Set LCD_RS to data mode
 ;           Write command byte to PORTB
@@ -436,7 +437,7 @@ LCD_WriteCommand:
 ;
 ; Uses:    WREG, STATUS
 ;
-;*****************************************************************
+;**********************************************************************
 LCD_WriteData:
     banksel(LCD_PORT)
     bcf     LCD_RW          ; Assert LCD_RW low
@@ -463,7 +464,7 @@ LCD_Write1:
     bcf     LCD_E           ; Assert LCD_E low
     goto    Delay_40us
 ;
-;*****************************************************************
+;**********************************************************************
 ; Subroutine Name: LCD_SetPosition
 ; Function: Set the position where character are to be 
 ;           written to the LCD display.
@@ -474,12 +475,12 @@ LCD_Write1:
 ;
 ; Uses:    WREG, STATUS
 ;
-;*****************************************************************
+;**********************************************************************
 LCD_SetPosition:
     iorlw   0x80        ; Set position LCD module command
     goto    LCD_WriteCommand
 ;
-;*****************************************************************
+;**********************************************************************
 ; Subroutine Name: LCD_putrs
 ;
 ; Function: This routine writes a string of bytes to the
@@ -491,19 +492,19 @@ LCD_SetPosition:
 ;
 ; Uses:    WREG, STATUS
 ;
-;*****************************************************************
+;**********************************************************************
 LCD_putrs:
     banksel(EECON1)
-    bsf     EECON1,EECON1_EEPGD_POSITION
-    bsf     EECON1,EECON1_RD_POSITION
+    bsf     EECON1,EEPGD
+    bsf     EECON1,RD
     nop
     nop
     banksel(EEADR)
     incf    EEADR,F
-    skipnz
+    skpnz
     incf    EEADRH,F
     movf    EEDATA,W
-    skipnz
+    skpnz
     return
     call    LCD_WriteData
     goto    LCD_putrs
@@ -532,6 +533,9 @@ Show_LCD_Message MACRO LCD_message
 ; Notes:
 ;   The B_reg is overwritten by the low 16-bits of the product.
 ;
+; Uses:    WREG, STATUS
+;
+;**********************************************************************
 uMutiply_16x16:
     movlw   16              ; Setup the number of bits to multiply
     movwf   mBits
@@ -541,12 +545,12 @@ uMutiply_16x16:
     rrf     B_reg+1,F
     rrf     B_reg,F
 uM16x16a:
-    skipc
+    skpc
     goto    uM16x16b
     movf    A_reg,W         ; When CARRY is set then add 
     addwf   D_reg+2,F       ; the multiplicand to the product.
     movf    A_reg+1,W
-    skipnc
+    skpnc
     incfsz  A_reg+1,W
     addwf   D_reg+3,F
 uM16x16b:
@@ -565,6 +569,14 @@ uM16x16b:
 ;
 ; Output:   BCD_out, 5 bytes of packed BCD digits
 ;
+;
+; Description:
+;   Convert a 32-bit unsigned interger to a 5-byte 
+;   packed BCD string of digits.
+;
+; Uses:    WREG, STATUS
+;
+;**********************************************************************
 Bin2BCD:
     clrf    BCD_out+0       ; Clear result
     clrf    BCD_out+1
@@ -631,8 +643,19 @@ ConvertBit:
     goto    ConvertBit
     return     
 ;
-; convert time of flight to distance in micrometers
+;**********************************************************************
+; Function: TOF_to_distance
+; Input:    A_reg, 16-bit Time of flight in microseconds from CCP1 capture
+;           B_reg, 16-bit Speed of sound in air (343 micrometers/microsecond)
 ;
+; Output:   D_reg, 32-bit (Time of flight)*(Speed of sound)/2 distance in micrometers
+;
+; Description:
+;   Convert time of flight to distance in micrometers.
+;
+; Uses:    WREG, STATUS
+;
+;**********************************************************************
 TOF_to_distance:
     banksel(D_reg)
     movf    TimeOfFlight+0,w
@@ -648,11 +671,11 @@ TOF_to_distance:
 ; Add 1 to round up
     movlw   1
     addwf   D_reg+0,F
-    skipnc
+    skpnc
     addwf   D_reg+1,F
-    skipnc
+    skpnc
     addwf   D_reg+2,F
-    skipnc
+    skpnc
     addwf   D_reg+3,F
 ;
 ; Divide by 2 to convert time of flight in micrometers to range in micrometers
@@ -671,13 +694,13 @@ AppInit:
 ;
     call    LCD_Init    ; Initialize LCD module
     banksel(PIE1)
-    bsf     PIE1,PIE1_TMR1IE_POSITION
-    bsf     PIE1,PIE1_CCP1IE_POSITION
+    bsf     PIE1,TMR1IE
+    bsf     PIE1,CCP1IE
     banksel(INTCON)
-    bsf     INTCON,INTCON_PEIE_POSITION
-    bsf     INTCON,INTCON_GIE_POSITION
+    bsf     INTCON,PEIE
+    bsf     INTCON,GIE
     banksel(T1CON)
-    bsf     T1CON,T1CON_TMR1ON_POSITION
+    bsf     T1CON,TMR1ON
 ;
 ; Show the initial LCD screen
 ;
@@ -696,7 +719,7 @@ AppLoop:
 ; Application loop HC-SR04 range state
 ;
     banksel(T1CON)
-    btfsc   T1CON,T1CON_TMR1ON_POSITION
+    btfsc   T1CON,TMR1ON
     goto    AppLoop_EndRangeState
     call    TOF_to_distance
     call    Bin2BCD         ; convert distance to BCD
@@ -730,17 +753,17 @@ AppLoop:
     ;
     ; Start TIMER1 to do another range pulse
     banksel(T1CON)
-    bsf     T1CON,T1CON_TMR1ON_POSITION
+    bsf     T1CON,TMR1ON
 AppLoop_EndRangeState:
 ;
 ; Applicaiton loop idle atate 
 ;
     banksel(IdleTick)
     movf    IdleTick,F
-    skipz
-    btfss   INTCON,INTCON_TMR0IF_POSITION
+    skpz
+    btfss   INTCON,TMR0IF
     goto    AppLoop
-    bcf     INTCON,INTCON_TMR0IF_POSITION
+    bcf     INTCON,TMR0IF
     decfsz  IdleTick,F
     goto    AppLoop
     bsf     IdleTick,3
@@ -753,8 +776,8 @@ AppLoop_EndRangeState:
 ;
 LCD_message1:
 ;       0123456789.12345
-    db "16F877A  HC-SR04",0
+    dt "16F877A  HC-SR04",0
 ;
-; Declare Power-On-Reset entry point
+; 
 ;
-    END     resetVec
+    END
