@@ -4,7 +4,7 @@
 ; From: https://stackoverflow.com/questions/76468338/mplab-x-pic-building-the-dissembled-output-and-flashing-to-the-same-target-roun
 ;
 ; Add this line in the project properties box, pic-as Global Options -> Additional options: 
-;    -Wl,-DCODE=2,-presetVec=0h,-pisr_Vec=4h,-ppg1=1001h,-ppg2=1802h,-ppg3=2313h,-peedata=F000h -Wa,-a 
+;    -Wl,-DCODE=2,-presetVec=0h,-pisr_Vec=4h,-ppg1=1001h,-ppg2=1802h,-ppg3=2313h,-pidlocs=8000h,-peedata=F000h -Wa,-a 
 ;
     PROCESSOR 16F1938
 
@@ -9826,4 +9826,6 @@ resetVec:
     DB  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF 
     DB  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF 
 
+    PSECT   idlocs,global,ovrld,class=IDLOC,space=5,delta=2,noexec
+    dw  0x3FFF,0x3FFF,0x3FFF,0x3FFF
     END     resetVec

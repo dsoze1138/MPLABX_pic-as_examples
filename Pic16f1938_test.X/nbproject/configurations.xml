@@ -67,9 +67,6 @@
         <property key="codecoverage.enabled" value="Disable"/>
         <property key="codecoverage.enableoutputtofile" value="false"/>
         <property key="codecoverage.outputfile" value=""/>
-        <property key="debugoptions.debug-startup" value="Use system settings"/>
-        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="lastid" value=""/>
         <property key="oscillator.auxfrequency" value="120"/>
         <property key="oscillator.auxfrequencyunit" value="Mega"/>
         <property key="oscillator.frequency" value="1"/>
@@ -229,8 +226,6 @@
         <property key="warningmessagebreakoptions.W0034_CORE_UNALIGNED_MEMORY_ACCESS"
                   value="report"/>
         <property key="warningmessagebreakoptions.W0035_CORE_UNIMPLEMENTED_RAMACCESS_NOTRAP"
-                  value="report"/>
-        <property key="warningmessagebreakoptions.W0036_UNIMPLEMENTED_INSTRUCTION"
                   value="report"/>
         <property key="warningmessagebreakoptions.W0040_FPU_DIFF_CP10_CP11"
                   value="report"/>
@@ -1031,7 +1026,7 @@
         <property key="summary-sha256" value="false"/>
         <property key="summary-xml" value="false"/>
         <property key="summary-xmlfull" value="false"/>
-        <appendMe value="-Wl,-DCODE=2,-presetVec=0h,-pisr_Vec=4h,-ppg1=1001h,-ppg2=1802h,-ppg3=2313h,-peedata=F000h -Wa,-a "/>
+        <appendMe value="-Wl,-DCODE=2,-presetVec=0h,-pisr_Vec=4h,-ppg1=1001h,-ppg2=1802h,-ppg3=2313h,-pidlocs=8000h,-peedata=F000h -Wa,-a "/>
       </pic-as-global>
       <pic-as-linker>
         <property key="linker-callgraph" value="std"/>
@@ -1041,7 +1036,6 @@
         <property key="linker-format-hex-file-for-download" value="true"/>
         <property key="linker-libraries" value=""/>
         <property key="linker-library-search-paths" value=""/>
-        <property key="linker-map-file-generation" value="true"/>
         <property key="linker-maxi-chip" value="false"/>
         <property key="linker-produce-intel-hex-extended-address-zero-output"
                   value="false"/>
