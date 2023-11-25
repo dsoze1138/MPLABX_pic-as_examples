@@ -1,6 +1,6 @@
 ; 
 ; This is an example of how the PIC-AS(v2.45) assembler 
-; process high and low priority interrupts.
+; processes high and low priority interrupts.
 ;
 ; External interrupt (INT0) is handled as high priority
 ; TIMER0 interrupt is handled as low priority
@@ -86,6 +86,13 @@ HighIsrHandler:
 ISR_INT0_Exit:
 ;
     retfie  1   ; Fast return from interrupt
+
+;
+; Application data
+;
+    PSECT   udata
+    global  AppLoopCount
+AppLoopCount:   ds      1
 ;
 ; Start of code
 ;
@@ -117,6 +124,8 @@ main:
 ; Application process loop
 ;
 AppLoop:
+    banksel AppLoopCount
+    incf    AppLoopCount,F,b
     goto    AppLoop
 
     end     resetVec
