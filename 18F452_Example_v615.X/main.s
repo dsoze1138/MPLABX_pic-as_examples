@@ -6,7 +6,7 @@
 ; TIMER0 interrupt is handled as low priority
 ;
 ; Add this line in the project properties box, pic-as Global Options -> Additional options: 
-;   -Wa,-a -Wl,-Map=main.map -Wl,-presetVec=0h,-phiIsrVec=08h,-ploIsrVec=18h
+;   -Wa,-a -Wl,-presetVec=0h,-phiIsrVec=08h,-ploIsrVec=18h
 ;
     PROCESSOR 18F452
     RADIX       dec
@@ -29,6 +29,7 @@
 #include <xc.inc>
 
     PSECT   resetVec,class=CODE,reloc=2
+    global  resetVec
 resetVec:
     clrf    PCLATU,c    ; Workaround for known bug in some PIC18F controllers
     goto    Start
@@ -36,7 +37,9 @@ resetVec:
 ;
 ;   High priority interrupt vector
     PSECT   hiIsrVec,global,reloc=2,class=CODE,delta=1
+    global  HighIsrVec
 ;
+HighIsrVec:
     call    $+4,1       ; Workaround for known bug in some PIC18F controllers
     pop                 ;
     goto    HighIsrHandler
@@ -52,6 +55,7 @@ BSR_save:       DS  1
 ;
 ;   Low priority interrupt vector and handler
     PSECT   loIsrVec,global,reloc=2,class=CODE,delta=1
+    global  LowIsrVec,LowIsrHandler
 ;
 LowIsrVec:
     movff   WREG,WREG_save
@@ -73,8 +77,41 @@ LowIsrExit:
     movff   WREG_save,WREG
     retfie  0   ; Return from interrupt
 ;
+; Start of code
+;
+    PSECT   StartCode,global,reloc=2,class=CODE,delta=1
+    global  Start
+Start:
+;
+; Disable the interrupt system
+    clrf    INTCON,c
+;
+; Enable priority interrupt handling
+    bsf     RCON,RCON_IPEN_POSITION,c
+;
+; Configure TIMER0 
+    movlw   0x4F
+    movwf   T0CON,c
+    clrf    TMR0L,c
+    bcf     INTCON2,INTCON2_TMR0IP_POSITION,c
+    bcf     INTCON,INTCON_TMR0IF_POSITION,c
+    bsf     INTCON,INTCON_TMR0IE_POSITION,c
+    bsf     T0CON,T0CON_TMR0ON_POSITION,c
+;
+; Configure INT0
+    bsf     TRISB,TRISB_TRISB0_POSITION,c
+    bcf     INTCON,INTCON_INT0IF_POSITION,c
+    bsf     INTCON,INTCON_INT0IE_POSITION,c
+;
+; Enablle the interrupt system
+    bsf     INTCON,INTCON_GIEL_POSITION,c
+    bsf     INTCON,INTCON_GIEH_POSITION,c
+;
+    goto    main
+;
 ;   High priority interrupt handler
-    PSECT   HighIsr_code,global,reloc=2,class=CODE,delta=1
+    PSECT   hiIsrCode,global,reloc=2,class=CODE,delta=1
+    global  HighIsrHandler
 ;
 HighIsrHandler:
 ;
@@ -86,7 +123,6 @@ HighIsrHandler:
 ISR_INT0_Exit:
 ;
     retfie  1   ; Fast return from interrupt
-
 ;
 ; Application data
 ;
@@ -94,32 +130,11 @@ ISR_INT0_Exit:
     global  AppLoopCount
 AppLoopCount:   ds      1
 ;
-; Start of code
+; Application code
 ;
     PSECT   code
-Start:
-    clrf    INTCON,c
-    bsf     RCON,RCON_IPEN_POSITION,c
-    goto    main
-
+    global  main,AppLoop
 main:
-    bsf     INTCON,INTCON_INT0IE_POSITION,c
-    bsf     INTCON,INTCON_TMR0IE_POSITION,c
-    bcf     INTCON2,INTCON2_TMR0IP_POSITION,c
-;
-; Configure TIMER0 
-    movlw   0x4F
-    movwf   T0CON,c
-    clrf    TMR0L,c
-    bcf     INTCON,INTCON_TMR0IF_POSITION,c
-    bsf     T0CON,T0CON_TMR0ON_POSITION,c
-;
-; Configure INT0
-    bsf     TRISB,TRISB_TRISB0_POSITION,c
-    bcf     INTCON,INTCON_INT0IF_POSITION,c
-
-    bsf     INTCON,INTCON_GIEL_POSITION,c
-    bsf     INTCON,INTCON_GIEH_POSITION,c
 ;
 ; Application process loop
 ;
@@ -127,5 +142,21 @@ AppLoop:
     banksel AppLoopCount
     incf    AppLoopCount,F,b
     goto    AppLoop
+
+#if defined(_PIC16)
+; RETLW table element for PIC16
+#define te(x) (0x3400+(x&255))
+#elif defined(_PIC18)
+; RETLW table element for PIC18
+#define te(x) (0x0c00+(x&255))
+#else
+; table element for unknown controller
+#define te(x) (0x0000+(x&255))
+#endif
+
+TableStart:
+    dw  te(0x01),te(0x02),te(0x03),te(0x04),te(0x05),te(0x06),te(0x07),te(0x08) ;// row 0
+    dw  te(0x21),te(0x22),te(0x23),te(0x24),te(0x25),te(0x26),te(0x27),te(0x28) ;// row 2
+TableEnd:
 
     end     resetVec
