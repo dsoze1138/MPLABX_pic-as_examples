@@ -145,7 +145,7 @@ AppLoop:
 ;
 ; Define table in code space
 ;
-    PSECT   TableCode,class=CODE,reloc=2,delta=1
+    PSECT   TableCode,class=CONST,reloc=2,delta=1
     global  TableStart,TableEnd
 
 #if defined(_PIC16)
