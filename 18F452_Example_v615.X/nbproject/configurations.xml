@@ -47,7 +47,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
+          <parseOnProdLoad>true</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
         <subordinates>
@@ -79,7 +79,7 @@
         <property key="oscillator.rcfrequency" value="250"/>
         <property key="oscillator.rcfrequencyunit" value="Kilo"/>
         <property key="periphADC1.altscl" value="false"/>
-        <property key="periphADC1.minTacq" value=""/>
+        <property key="periphADC1.minTacq" value="5"/>
         <property key="periphADC1.tacqunits" value="microseconds"/>
         <property key="periphADC2.altscl" value="false"/>
         <property key="periphADC2.minTacq" value=""/>
@@ -553,7 +553,7 @@
         <property key="oscillator.rcfrequency" value="250"/>
         <property key="oscillator.rcfrequencyunit" value="Kilo"/>
         <property key="periphADC1.altscl" value="false"/>
-        <property key="periphADC1.minTacq" value=""/>
+        <property key="periphADC1.minTacq" value="5"/>
         <property key="periphADC1.tacqunits" value="microseconds"/>
         <property key="periphADC2.altscl" value="false"/>
         <property key="periphADC2.minTacq" value=""/>
@@ -1013,7 +1013,7 @@
       </Tool>
       <pic-as-assembler>
         <property key="fmax-errors" value="20"/>
-        <property key="list-custom-assembler-options" value=""/>
+        <property key="list-custom-assembler-options" value="-g=coff"/>
         <property key="list-custom-preprocessor-options" value=""/>
         <property key="list-ddefine-symbols" value=""/>
         <property key="list-define-symbols" value=""/>
@@ -1036,12 +1036,12 @@
         <property key="summary-sha256" value="false"/>
         <property key="summary-xml" value="false"/>
         <property key="summary-xmlfull" value="false"/>
-        <appendMe value="-Wa,-a -Wl,-Map=main.map -Wl,-presetVec=0h,-phiIsrVec=08h,-ploIsrVec=18h"/>
+        <appendMe value="-Wa,-a -Wl,-presetVec=0h,-phiIsrVec=08h,-ploIsrVec=18h"/>
       </pic-as-global>
       <pic-as-linker>
         <property key="linker-callgraph" value="std"/>
         <property key="linker-checksum" value=""/>
-        <property key="linker-custom-options" value=""/>
+        <property key="linker-custom-options" value="-N"/>
         <property key="linker-fill" value=""/>
         <property key="linker-format-hex-file-for-download" value="false"/>
         <property key="linker-libraries" value=""/>
