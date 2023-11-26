@@ -28,7 +28,7 @@
 
 #include <xc.inc>
 
-    PSECT   resetVec,class=CODE,reloc=2
+    PSECT   resetVec,class=CODE,reloc=2,delta=1
     global  resetVec
 resetVec:
     clrf    PCLATU,c    ; Workaround for known bug in some PIC18F controllers
@@ -36,7 +36,7 @@ resetVec:
 
 ;
 ;   High priority interrupt vector
-    PSECT   hiIsrVec,global,reloc=2,class=CODE,delta=1
+    PSECT   hiIsrVec,class=CODE,reloc=2,delta=1
     global  HighIsrVec
 ;
 HighIsrVec:
@@ -45,7 +45,7 @@ HighIsrVec:
     goto    HighIsrHandler
 ;
 ;   Data space use by low priority interrupt handler to save context
-    PSECT   loIsrData,global,class=COMRAM,space=1,delta=1,lowdata,noexec
+    PSECT   loIsrData,class=COMRAM,space=1,delta=1,lowdata,noexec
 ;
     GLOBAL  WREG_save,STATUS_save,BSR_save
 ;
@@ -54,7 +54,7 @@ STATUS_save:    DS  1
 BSR_save:       DS  1
 ;
 ;   Low priority interrupt vector and handler
-    PSECT   loIsrVec,global,reloc=2,class=CODE,delta=1
+    PSECT   loIsrVec,class=CODE,reloc=2,delta=1
     global  LowIsrVec,LowIsrHandler
 ;
 LowIsrVec:
@@ -79,7 +79,7 @@ LowIsrExit:
 ;
 ; Start of code
 ;
-    PSECT   StartCode,global,reloc=2,class=CODE,delta=1
+    PSECT   StartCode,class=CODE,reloc=2,delta=1
     global  Start
 Start:
 ;
@@ -110,7 +110,7 @@ Start:
     goto    main
 ;
 ;   High priority interrupt handler
-    PSECT   hiIsrCode,global,reloc=2,class=CODE,delta=1
+    PSECT   hiIsrCode,class=CODE,reloc=2,delta=1
     global  HighIsrHandler
 ;
 HighIsrHandler:
@@ -142,6 +142,11 @@ AppLoop:
     banksel AppLoopCount
     incf    AppLoopCount,F,b
     goto    AppLoop
+;
+; Define table in code space
+;
+    PSECT   TableCode,class=CODE,reloc=2,delta=1
+    global  TableStart,TableEnd
 
 #if defined(_PIC16)
 ; RETLW table element for PIC16
