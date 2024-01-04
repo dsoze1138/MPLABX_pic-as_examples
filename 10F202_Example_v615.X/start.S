@@ -24,6 +24,9 @@
 ;
 ; Set the configuration word
 ;
+  CONFIG  WDTE = OFF            ; Watchdog Timer (WDT disabled)
+  CONFIG  CP = OFF              ; Code Protect (Code protection off)
+  CONFIG  MCLRE = ON            ; Master Clear Enable (GP3/MCLR pin function  is MCLR)
 ;
 ; Declare one byte in RAM
 ;
