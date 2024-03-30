@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>18F47Q53_UART_picas_v615</name>
+            <name>18F47Q43_UART_picas_v615</name>
             <creation-uuid>311975e0-1dbf-4ec8-9dd5-a959d99d7747</creation-uuid>
             <make-project-type>0</make-project-type>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
