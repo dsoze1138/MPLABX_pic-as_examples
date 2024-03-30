@@ -4,7 +4,7 @@
  * Target: PIC18F57Q43
  * Compiler: pic-as v2.45
  * IDE: MPLABX v6.15
- * Test HW: PIC18F47Q43 Curiosity Nano (DM164150)
+ * Test HW: PIC18F57Q43 Curiosity Nano (DM164150)
  *
  * Test PUSHL opcode using the PIC-AS(v2.45) assembler
  *
