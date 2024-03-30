@@ -33,7 +33,7 @@
  *                 +----------------+                 +------------------+                 +---------------+                 +---------------+
  *                                                                             TQFP-48
  * This is what the output looks like:
- *     PIC18F47Q43 start version 1.0.05
+ *     PIC18F57Q43 start version 1.0.05
  *     FSR2 (t1):050D, (t2):050D, PUSHL 0xEF ; failed, FSR2 corrupt
  *     FSR2 (t1):050E, (t2):050F, PUSHL 0xEE ; failed, FSR2 corrupt
  *     FSR2 (t1):050D, (t2):050D, PUSHL 0xED ; failed, FSR2 corrupt
@@ -292,7 +292,7 @@ main:
  
     /* announce to the world tep applicaiton has started */
     call    U1_WriteString
-    dw      13,10,"PIC18F47Q43 start version 1.0.05",13,10,0
+    dw      13,10,"PIC18F57Q43 start version 1.0.05",13,10,0
  
     /* Initialize index for selecting PUSHL opcpde */
     push
