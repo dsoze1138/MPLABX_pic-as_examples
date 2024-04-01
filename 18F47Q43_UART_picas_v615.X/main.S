@@ -33,17 +33,17 @@
  *                 +----------------+                 +------------------+                 +---------------+                 +---------------+
  *                                                                             TQFP-48
  * This is what the output looks like:
- *     PIC18F57Q43 start version 1.0.05
- *     FSR2 (t1):050D, (t2):050D, PUSHL 0xEF ; failed, FSR2 corrupt
- *     FSR2 (t1):050E, (t2):050F, PUSHL 0xEE ; failed, FSR2 corrupt
- *     FSR2 (t1):050D, (t2):050D, PUSHL 0xED ; failed, FSR2 corrupt
- *     FSR2 (t1):050E, (t2):050F, PUSHL 0xEC ; failed, FSR2 corrupt
- *     FSR2 (t1):0579, (t2):0579, PUSHL 0xEB ; failed, FSR2 corrupt
- *     FSR2 (t1):3FFF, (t2):050D, PUSHL 0xE7 ; failed, FSR2 corrupt
- *     FSR2 (t1):0001, (t2):050F, PUSHL 0xE6 ; failed, FSR2 corrupt
- *     FSR2 (t1):0000, (t2):050D, PUSHL 0xE5 ; failed, FSR2 corrupt
- *     FSR2 (t1):0001, (t2):050F, PUSHL 0xE4 ; failed, FSR2 corrupt
- *     FSR2 (t1):0064, (t2):0571, PUSHL 0xE3 ; failed, FSR2 corrupt
+ *     PIC18F57Q43 start version 1.0.06
+ *     FSR2 (t1):0506, (t2):050D, PUSHL 0xEF ; failed, FSR2 corrupt
+ *     FSR2 (t1):0508, (t2):050F, PUSHL 0xEE ; failed, FSR2 corrupt
+ *     FSR2 (t1):0506, (t2):050D, PUSHL 0xED ; failed, FSR2 corrupt
+ *     FSR2 (t1):0508, (t2):050F, PUSHL 0xEC ; failed, FSR2 corrupt
+ *     FSR2 (t1):0572, (t2):0579, PUSHL 0xEB ; failed, FSR2 corrupt
+ *     FSR2 (t1):0505, (t2):050D, PUSHL 0xE7 ; failed, FSR2 corrupt
+ *     FSR2 (t1):0507, (t2):050F, PUSHL 0xE6 ; failed, FSR2 corrupt
+ *     FSR2 (t1):0505, (t2):050D, PUSHL 0xE5 ; failed, FSR2 corrupt
+ *     FSR2 (t1):0507, (t2):050F, PUSHL 0xE4 ; failed, FSR2 corrupt
+ *     FSR2 (t1):0569, (t2):0571, PUSHL 0xE3 ; failed, FSR2 corrupt
  *     FSR2 (t1):0510, (t2):050F, PUSHL 0xDE ; failed, FSR2 corrupt, literal not pushed into Buffer
  *     FSR2 (t1):0510, (t2):050F, PUSHL 0xDC ; failed, FSR2 corrupt
  *     FSR2 (t1):056A, (t2):0569, PUSHL 0xDB ; failed, FSR2 corrupt, literal not pushed into Buffer
@@ -292,7 +292,7 @@ main:
  
     /* announce to the world tep applicaiton has started */
     call    U1_WriteString
-    dw      13,10,"PIC18F57Q43 start version 1.0.05",13,10,0
+    dw      13,10,"PIC18F57Q43 start version 1.0.06",13,10,0
  
     /* Initialize index for selecting PUSHL opcpde */
     push
@@ -335,6 +335,8 @@ Test_Loop:
 ;   validate that FSR2 decremented by one.
 ;
     movlb   0x04            /* selecting bank 4, a different bank causes PUSHL to fail in different ways */
+    lfsr    0,Buffer-1      /* The fault in the PUSHL opcode appears to access the SFRs associated with  */
+    lfsr    1,Buffer-2      /* indirect operations of the FSR registers. So initialise them too.         */
 ; Start part 1 test
     lfsr    2,Buffer+7
     movf    TOSL,W,c
