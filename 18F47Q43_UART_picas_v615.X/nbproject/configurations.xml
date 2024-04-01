@@ -186,7 +186,7 @@
         <property key="summary-sha256" value="false"/>
         <property key="summary-xml" value="false"/>
         <property key="summary-xmlfull" value="false"/>
-        <appendMe value="-Wa,-a -Wl,-presetVec=0h,-pMainApp=20h,-pudata_acs=500h"/>
+        <appendMe value="-Wl,-presetVec=0h,-pMainApp=20h,-pMyBuffer=500h"/>
       </pic-as-global>
       <pic-as-linker>
         <property key="linker-callgraph" value="std"/>

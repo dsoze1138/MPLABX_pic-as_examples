@@ -12,7 +12,7 @@
  * See output on vitrual COM port from Curiosity Nano (DM164150), 9600 baud.
  *
  * Add this line in the project properties box, pic-as Global Options -> Additional options:
- *   -Wa,-a -Wl,-presetVec=0h,-pMainApp=20h,-pudata_acs=500h
+ *   -Wl,-presetVec=0h,-pMainApp=20h,-pMyBuffer=500h
  *
  * Created on March 28, 2024, 11:36 AM
  *
@@ -81,7 +81,7 @@
 ;
 ; objects in common (Access bank) memory
 ;
-    psect    udata_acs,global,delta=1
+    psect    MyBuffer,global,delta=1
     global  Buffer
     ds      8
 Buffer:
@@ -335,8 +335,8 @@ Test_Loop:
 ;   validate that FSR2 decremented by one.
 ;
     movlb   0x04            /* selecting bank 4, a different bank causes PUSHL to fail in different ways */
-    lfsr    0,Buffer-1      /* The fault in the PUSHL opcode appears to access the SFRs associated with  */
-    lfsr    1,Buffer-2      /* indirect operations of the FSR registers. So initialise them too.         */
+    lfsr    0,0x507         /* The fault in the PUSHL opcode appears to access the SFRs associated with  */
+    lfsr    1,0x506         /* indirect operations of the FSR registers. So initialise them too.         */
 ; Start part 1 test
     lfsr    2,Buffer+7
     movf    TOSL,W,c
