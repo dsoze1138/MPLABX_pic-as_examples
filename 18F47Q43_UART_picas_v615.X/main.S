@@ -392,7 +392,7 @@ LooksGood:
     goto    Test_Loop   ; Special case to test PUSHL with zero as the literal
  
 ;
-; Table if PUSHL opcodes and lookup function
+; Table 0f PUSHL opcodes and lookup function
 ;
     PSECT   TablePUSHL,class=CODE,reloc=2
 ;
