@@ -33,17 +33,17 @@
  *                 +----------------+                 +------------------+                 +---------------+                 +---------------+
  *                                                                             TQFP-48
  * This is what the output looks like:
- *     PIC18F57Q43 start built on Apr  2 2024 at 23:57:30
- *     FSR2 (t1):0506, (t2):050D, PUSHL 0xEF ; failed, FSR2 corrupt
- *     FSR2 (t1):0508, (t2):050F, PUSHL 0xEE ; failed, FSR2 corrupt
- *     FSR2 (t1):0506, (t2):050D, PUSHL 0xED ; failed, FSR2 corrupt
- *     FSR2 (t1):0508, (t2):050F, PUSHL 0xEC ; failed, FSR2 corrupt
- *     FSR2 (t1):0572, (t2):0579, PUSHL 0xEB ; failed, FSR2 corrupt
- *     FSR2 (t1):0505, (t2):050D, PUSHL 0xE7 ; failed, FSR2 corrupt
- *     FSR2 (t1):0507, (t2):050F, PUSHL 0xE6 ; failed, FSR2 corrupt
- *     FSR2 (t1):0505, (t2):050D, PUSHL 0xE5 ; failed, FSR2 corrupt
- *     FSR2 (t1):0507, (t2):050F, PUSHL 0xE4 ; failed, FSR2 corrupt
- *     FSR2 (t1):0569, (t2):0571, PUSHL 0xE3 ; failed, FSR2 corrupt
+ *     PIC18F57Q43 start built on Apr  3 2024 at 00:17:02
+ *     FSR2 (t1):0506, (t2):0506, PUSHL 0xEF ; failed, FSR2 corrupt
+ *     FSR2 (t1):0508, (t2):0508, PUSHL 0xEE ; failed, FSR2 corrupt
+ *     FSR2 (t1):0506, (t2):0506, PUSHL 0xED ; failed, FSR2 corrupt
+ *     FSR2 (t1):05EC, (t2):0508, PUSHL 0xEC ; failed, FSR2 corrupt
+ *     FSR2 (t1):0572, (t2):0572, PUSHL 0xEB ; failed, FSR2 corrupt
+ *     FSR2 (t1):0505, (t2):0505, PUSHL 0xE7 ; failed, FSR2 corrupt
+ *     FSR2 (t1):0507, (t2):0507, PUSHL 0xE6 ; failed, FSR2 corrupt
+ *     FSR2 (t1):0505, (t2):0505, PUSHL 0xE5 ; failed, FSR2 corrupt
+ *     FSR2 (t1):0507, (t2):0507, PUSHL 0xE4 ; failed, FSR2 corrupt
+ *     FSR2 (t1):0569, (t2):0569, PUSHL 0xE3 ; failed, FSR2 corrupt
  *     FSR2 (t1):0510, (t2):050F, PUSHL 0xDE ; failed, FSR2 corrupt, literal not pushed into Buffer
  *     FSR2 (t1):0510, (t2):050F, PUSHL 0xDC ; failed, FSR2 corrupt
  *     FSR2 (t1):056A, (t2):0569, PUSHL 0xDB ; failed, FSR2 corrupt, literal not pushed into Buffer
@@ -184,10 +184,10 @@ U1_ShowHEX:
     call    U1_Write
     return
  
-U1_ShowFSR0:
-    movf    FSR0H,W,c
+U1_ShowBuffer:
+    movff   Buffer+1,WREG
     call    U1_ShowHEX
-    movf    FSR0L,W,c
+    movff   Buffer+0,WREG
     call    U1_ShowHEX
     return
  
@@ -292,19 +292,19 @@ Test_Loop:
 ;   validate that the buffer RAM changed to the expected literal value
 ;   validate that FSR2 decremented by one.
 ;
-    movlb   0x04            /* selecting bank 4, a different bank causes PUSHL to fail in different ways */
-    lfsr    0,0x507         /* The fault in the PUSHL opcode appears to access the SFRs associated with  */
-    lfsr    1,0x506         /* indirect operations of the FSR registers. So initialise them too.         */
+    clrf    TOSH,c          /* clear test result flags */
+;
 ; Start part 1 test
     lfsr    2,Buffer+7
     movf    TOSL,W,c
-    clrf    TOSH,c
+    movlb   0x04            /* selecting bank 4, a different bank causes PUSHL to fail in different ways */
+    lfsr    0,0x507         /* The fault in the PUSHL opcode appears to access the SFRs associated with  */
+    lfsr    1,0x506         /* indirect operations of the FSR registers. So initialise them too.         */
     call    TestPUSHL
-    movff   FSR2L,FSR0L     /* save whatever PUSHL did to FSR2 */
-    movff   FSR2H,FSR0H
+    movff   FSR2L,Buffer+0     /* save whatever PUSHL did to FSR2 */
+    movff   FSR2H,Buffer+1
 ;
 ; Part 1 validation
- 
     movlw   LOW(Buffer+6)
     xorwf   FSR2L,W,c
     btfss   STATUS,STATUS_Z_POSITION,c
@@ -318,6 +318,9 @@ Test_Loop:
 ; Start part 2 test
     lfsr    2,Buffer+6
     movf    TOSL,W,c
+    movlb   0x04            /* selecting bank 4, a different bank causes PUSHL to fail in different ways */
+    lfsr    0,0x507         /* The fault in the PUSHL opcode appears to access the SFRs associated with  */
+    lfsr    1,0x506         /* indirect operations of the FSR registers. So initialise them too.         */
     call    TestPUSHL
 ;
 ; Part 2 validation
@@ -351,7 +354,7 @@ Test_Loop:
     call    U1_WriteString
     dw      "FSR2 (t1):",0
  
-    call    U1_ShowFSR0
+    call    U1_ShowBuffer
  
     call    U1_WriteString
     dw      ", (t2):",0
