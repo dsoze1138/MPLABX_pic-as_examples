@@ -33,7 +33,7 @@
  *                 +----------------+                 +------------------+                 +---------------+                 +---------------+
  *                                                                             TQFP-48
  * This is what the output looks like:
- *     PIC18F57Q43 start version 1.0.06
+ *     PIC18F57Q43 start built on Apr  2 2024 at 23:57:30
  *     FSR2 (t1):0506, (t2):050D, PUSHL 0xEF ; failed, FSR2 corrupt
  *     FSR2 (t1):0508, (t2):050F, PUSHL 0xEE ; failed, FSR2 corrupt
  *     FSR2 (t1):0506, (t2):050D, PUSHL 0xED ; failed, FSR2 corrupt
@@ -252,7 +252,11 @@ main:
  
     /* announce to the world tep applicaiton has started */
     call    U1_WriteString
-    dw      13,10,"PIC18F57Q43 start version 1.0.07",13,10,0
+    dw      13,10,"PIC18F57Q43 start built on "
+    dw      __DATE__
+    dw      " at "
+    dw      __TIME__
+    dw      13,10,0
  
     /* Initialize index for selecting PUSHL opcpde */
     push
