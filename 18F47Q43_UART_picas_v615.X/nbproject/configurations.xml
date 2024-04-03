@@ -181,7 +181,7 @@
         <property key="summary-file" value="false"/>
         <property key="summary-hex" value="false"/>
         <property key="summary-mem" value="true"/>
-        <property key="summary-psect" value="false"/>
+        <property key="summary-psect" value="true"/>
         <property key="summary-sha1" value="false"/>
         <property key="summary-sha256" value="false"/>
         <property key="summary-xml" value="false"/>

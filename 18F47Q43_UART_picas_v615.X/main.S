@@ -55,23 +55,17 @@
  
 /* Select UART1 baud rate */
 #define BAUD_RATE (9600)
- 
-#define TEST_PUSHL
- 
+
+//#define PUSHL_WORKAROUND
+
     config FEXTOSC = OFF, RSTOSC = HFINTOSC_1MHZ, CLKOUTEN = OFF, PR1WAY = OFF, CSWEN = ON
     config FCMEN = ON, MCLRE = EXTMCLR, PWRTS = PWRT_OFF, MVECEN = OFF, IVT1WAY = OFF
     config LPBOREN = OFF, BOREN = OFF, BORV = VBOR_1P9, ZCD = OFF, PPS1WAY = OFF
-    config STVREN = ON, LVP = ON
+    config STVREN = ON, LVP = ON, XINST = ON
     config WDTCPS = WDTCPS_31, WDTE = OFF, WDTCWS = WDTCWS_7, WDTCCS = SC
     config BBSIZE = BBSIZE_512, BBEN = OFF, SAFEN = OFF
     config WRTB = OFF, WRTC = OFF, WRTD = OFF, WRTSAF = OFF, WRTAPP = OFF
     config CP = OFF
- 
-#if defined(TEST_PUSHL)
-    config XINST = ON
-#else
-    config XINST = OFF
-#endif
  
     PROCESSOR 18F57Q43
     RADIX   DEC
@@ -180,12 +174,7 @@ U1_WriteStringExit:
 U1_ShowHEX:
     movwf   PRODL,c
     swapf   PRODL,W,c
-    andlw   0x0F
-    addlw   -10
-    btfsc   STATUS,STATUS_C_POSITION,c
-    addlw   'A'-'9'-1
-    addlw   '0'+10
-    call    U1_Write
+    rcall   $+4
     movf    PRODL,W,C
     andlw   0x0F
     addlw   -10
@@ -214,35 +203,6 @@ U1_CRLF:
     call    U1_Write
     movlw   0x0A
     call    U1_Write
-    return
-;
-; Function: TestPUSHL
-;
-; Input:    WREG (00 to FF) selects PUSHL literal opcdoe
-;
-TestPUSHL:
-    call    LookupPUSHL
-; Table of all 256 PUSHL literal opcodes
-Literal  set 0
-    REPT 256
-    movlw   0       /* the value in WREG affects how PUSHL fails */
-#if defined(TEST_PUSHL)
-    pushl   Literal
-#else
-    comf    POSTDEC2,F,c
-#endif
-    return
-Literal set Literal+1
-    ENDM
-;
-LookupPUSHL:
-    mullw   6
-    movf    PRODL,W,c
-    addwf   TOSL,F,c
-    movf    PRODH,W,c
-    addwfc  TOSH,F,c
-    movlw   0
-    addwfc  TOSU,F,c
     return
 ;
 ; main entry point
@@ -292,7 +252,7 @@ main:
  
     /* announce to the world tep applicaiton has started */
     call    U1_WriteString
-    dw      13,10,"PIC18F57Q43 start version 1.0.06",13,10,0
+    dw      13,10,"PIC18F57Q43 start version 1.0.07",13,10,0
  
     /* Initialize index for selecting PUSHL opcpde */
     push
@@ -309,14 +269,8 @@ AppLoop:
  
 Test_Loop:
     /* initialize buffer with the complement of what PUSHL is expected to write */
-    lfsr    2,Buffer
+    lfsr    2,Buffer+6
     comf    TOSL,W,c
-    movwf   POSTINC2,c
-    movwf   POSTINC2,c
-    movwf   POSTINC2,c
-    movwf   POSTINC2,c
-    movwf   POSTINC2,c
-    movwf   POSTINC2,c
     movwf   POSTINC2,c
     movwf   INDF2,c
 ;
@@ -433,4 +387,53 @@ LooksGood:
     bsf     LATF,LATF_LATF3_POSITION,c  ; turn LED off
     goto    Test_Loop   ; Special case to test PUSHL with zero as the literal
  
+;
+; Table if PUSHL opcodes and lookup function
+;
+    PSECT   TablePUSHL,class=CODE,reloc=2
+;
+LookupPUSHL:                            ; The pic-as assembler usually does a crap job of pointer arithmatic but
+    mullw   HIGH(TableEnd-TableStart)   ; this only works because there are exactly 256 elements in the table.
+    movf    PRODL,W,c
+    addwf   TOSL,F,c
+    movf    PRODH,W,c
+    addwfc  TOSH,F,c
+    movlw   0
+    addwfc  TOSU,F,c
+    return
+;
+; Function: TestPUSHL
+;
+; Input:    WREG (00 to FF) selects PUSHL literal opcdoe
+;
+TestPUSHL:
+    rcall   LookupPUSHL
+TableStart:
+; Table of all 256 PUSHL literal opcodes
+Literal  set 0
+    REPT 256
+    movlw   0       /* the value in WREG affects how PUSHL fails */
+#if defined(PUSHL_WORKAROUND)
+  if (Literal < 0xDB)
+    pushl   Literal
+    return
+    nop
+  else
+    if (Literal < 0xF0)
+      pushl   Literal-128
+      bsf     [1],7
+      return
+    else
+      pushl   Literal
+      return
+      nop
+    endif
+  endif
+#else
+      pushl   Literal
+      return
+#endif
+Literal set Literal+1
+    ENDM
+TableEnd:
     END     resetVec
