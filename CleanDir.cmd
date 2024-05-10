@@ -27,6 +27,7 @@
 @if exist ndist             rmdir /s /q ndist
 @if exist disassembly       rmdir /s /q disassembly
 @if exist .generated_files  rmdir /s /q .generated_files
+@if exist queuelogs         rmdir /s /q queuelogs
 @if exist nbactions.xml     del   /f /q nbactions.xml
 @if exist funclist          del   /f /q funclist
 @if exist nbproject\Package-*.bash del   /f /q nbproject\Package-*.bash
