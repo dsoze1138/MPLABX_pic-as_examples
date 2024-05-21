@@ -104,7 +104,7 @@ TMR0_ISR:
     banksel PORTB
     clrf    PORTB
 
-    btfsc   PORTA,2
+    btfss   PORTA,2
     goto    TMR0_EN2
 TMR0_EN1:
     bcf     PORTA,2
