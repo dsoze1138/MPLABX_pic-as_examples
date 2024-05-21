@@ -35,6 +35,8 @@
 @if exist *.lst             del   /f /q *.lst
 @if exist *.err             del   /f /q *.err
 @if exist *.map             del   /f /q *.map
+@if exist *.log             del   /f /q *.log
+@if exist *.log.inx         del   /f /q *.log.inx
 @goto CleanDone
 :Clean8
 @if exist funclist          del   /f /q funclist

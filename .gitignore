@@ -78,6 +78,8 @@ Temporary Items
 *.sdb
 *.obj.dmp
 *.map
+*.log
+*.log.inx
 
 # Microchip MPLABX put in a .gitignore in each MPLABX project directory
 # =========================
