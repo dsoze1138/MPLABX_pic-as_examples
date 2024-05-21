@@ -149,7 +149,6 @@ IsrExit:
 ;objects in bank 0 memory, note PIC16F84 does not have banked memory
     PSECT   MainData,global,class=RAM,space=1,delta=1,noexec
     GLOBAL  T0_Sample,TicksInTenthSecCount,TenthSecondCountBCD
-    GLOBAL  LED_BCD
     GLOBAL  SW_Flags
     GLOBAL  BTN_sample,BTN_stable,BTN_change,BTN_bounce
 
@@ -172,7 +171,10 @@ BTN_sample:     ds      1
 BTN_stable:     ds      1
 BTN_change:     ds      1
 BTN_bounce:     ds      1
+#ifdef SIM_REAL_TIME_OUTPUT
+    GLOBAL  LED_BCD
 LED_BCD:        ds      1
+#endif
 ;
 ; Applicaiton initialization
     PSECT   MainCode,global,class=CODE,delta=2
@@ -193,7 +195,9 @@ main:
     movwf   TicksInTenthSecCount
     clrf    TenthSecondCountBCD+0
     clrf    TenthSecondCountBCD+1
-    clrf    LED_BCD ; debug for simulator
+#ifdef SIM_REAL_TIME_OUTPUT
+    clrf    LED_BCD
+#endif
     clrf    Segments+0
     clrf    Segments+1
     bcf     INTCON,INTCON_TMR0IF_POSITION
@@ -226,10 +230,10 @@ AppLoop:
     movf    BTN_stable,W
     andwf   BTN_change,F
     btfsc   BTN_change,BTN2_POSITION
-    bsf     SW_Reset    ; buttin 2 changed to pressed
+    bsf     SW_Reset    ; buttin 2 changed to pressed, assert reset state
     movlw   SW_START_MASK
     btfsc   BTN_change,BTN1_POSITION
-    xorwf   SW_Flags,F  ; buttin 1 changed to pressed
+    xorwf   SW_Flags,F  ; buttin 1 changed to pressed, toggle start state
     clrf    BTN_change
 ;
 ; Process reset state
@@ -237,7 +241,9 @@ AppLoop:
     goto    Count4msTicks
     clrf    TenthSecondCountBCD+0
     clrf    TenthSecondCountBCD+1
-    clrf    LED_BCD ; debug for simulator
+#ifdef SIM_REAL_TIME_OUTPUT
+    clrf    LED_BCD
+#endif
     bcf     SW_Reset
     bcf     SW_Start
 Count4msTicks:
