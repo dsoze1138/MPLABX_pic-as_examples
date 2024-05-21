@@ -78,6 +78,24 @@ resetVec:
     GLOBAL  WREG_save,STATUS_save,PCLATH_save
     GLOBAL  Segments
 ;
+#define SIM_REAL_TIME_OUTPUT
+;
+; The MPLABX v6.15 simulation tool support a very buggy
+; method for real time output while the simulation is running.
+;
+; Best I could get working is one byte of output in
+; the watch window and only the "value" column would
+; update. For that to work the byte must be written
+; by the application in one opcode cycle. Anything
+; else will show only the partial data when the
+; simulator "gets around to it" for updateing the
+; watch dialog window.
+;
+#ifdef SIM_REAL_TIME_OUTPUT
+    GLOBAL  SRTOF
+SRTOF:        ds      1
+#endif
+;
 WREG_save:      ds      1
 STATUS_save:    ds      1
 PCLATH_save:    ds      1
@@ -249,11 +267,12 @@ Count4msTicks:
     goto    AppLoop
 ;
 ; count tenths of seconds in a packed 4-digit BCD array, LSD first
-    clrf    FSR     ; debug for simulator
     incf    TenthSecondCountBCD+0,W
     addlw   0x06
-    skpndc          ; debug for simulator
-    incfsz  FSR     ; debug for simulator
+#ifdef SIM_REAL_TIME_OUTPUT
+    skpndc
+    bsf     SRTOF,0
+#endif
     skpndc
     goto    IncBCD_CarryD0
     addlw   -0x06
@@ -285,17 +304,20 @@ IncBCD_CarryD3:
 IncBCD_B1done:
     movwf   TenthSecondCountBCD+1
 IncBCD_done:
+#ifdef SIM_REAL_TIME_OUTPUT
 ;
 ; Debug so simulator can show LED count in real time
-    decfsz  FSR
+    btfss   SRTOF,0
     goto    AppLoop
     swapf   TenthSecondCountBCD+0,W
     andlw   0x0F
-    movwf   FSR
+    movwf   SRTOF
     swapf   TenthSecondCountBCD+1,W
     andlw   0xF0
-    iorwf   FSR,W
+    iorwf   SRTOF,W
     movwf   LED_BCD
+    clrf    SRTOF
+#endif
     goto    AppLoop
 ;
 ; poll buttons
