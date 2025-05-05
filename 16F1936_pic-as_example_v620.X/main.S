@@ -80,8 +80,8 @@ interruptVec:
 ;
 ; Application 
     PSECT   udata_shr   ; define data commeon to all banks
-    global  commonTwmp
-commonTwmp: ds  1
+    global  commonTemp
+commonTemp: ds  1
 
     PSECT   udata       ; define data in one bank
     global  bankedTemp
