@@ -51,24 +51,24 @@
 ;
 ; Power-On-Reset entry point
 resetVec    CODE    0x0000
-    
+    global  resetVec
 resetVec:
     PAGESEL main                ;jump to the main routine
     goto    main
 ;
 ; Interrupt vector entry point
 interruptVec CODE   0x0004
-    
+    global  interruptVec
 interruptVec:
     retfie
 ;
 ; Application 
     udata_shr   ; define data commeon to all banks
-    
+    global  commonTemp
 commonTemp: RES  1
 
     udata       ; define data in one bank
-    
+    global  bankedTemp
 bankedTemp: RES  1
 
     code        ; main application entry point
