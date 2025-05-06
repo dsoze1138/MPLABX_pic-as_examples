@@ -239,6 +239,20 @@ EUSART2_Init:
 
     return
 
+;
+; Data in banked memory
+;
+    psect   MAX7219Data,global,class=RAM,space=1,delta=1,noexec
+    global  MAX7219_Pixels
+
+#define MAX_CHAR_WIDTH 6
+#define MAX_CHARS 42
+#define MAX_DISPLAY_WIDTH MAX_CHARS*MAX_CHAR_WIDTH
+
+MAX7219_Pixels:
+    ds      MAX_DISPLAY_WIDTH
+
+    PSECT   MAX7219Code,global,reloc=2,class=CODE,delta=1
 
 ;MAX7219 SUBS----------------------------------------------------------------------------------
 ;
@@ -394,106 +408,95 @@ CG_LOOK_UP:
 ; Calls:    BB_SPI_TX, MAX7219_DESELECT
 ;
 MAX7219INIT:
-                bsf     MAX7912_CSn,c
-                bcf     MAX7912_CSn_DIR,c
-                bcf     SPI_MOSI,c
-                bcf     SPI_MOSI_DIR,c
-                bcf     SPI_CLK,c
-                bcf     SPI_CLK_DIR,c
-                bsf     SPI_MISO_DIR,c
-                
-                CALL    MAX7219_SELECT
-                MOVLW   0x0C            ;SHUTDOWN COMMAND
-                CAll    BB_SPI_TX
-                MOVLW   0x01            ;RELEASED
-                CAll    BB_SPI_TX
-                CALL    MAX7219_DESELECT
+    bsf     MAX7912_CSn,c
+    bcf     MAX7912_CSn_DIR,c
+    bcf     SPI_MOSI,c
+    bcf     SPI_MOSI_DIR,c
+    bcf     SPI_CLK,c
+    bcf     SPI_CLK_DIR,c
+    bsf     SPI_MISO_DIR,c
 
-                CALL    MAX7219_SELECT
-                MOVLW   0x09            ;DECODE MODE COMMAND
-                CAll    BB_SPI_TX
-                MOVLW     0             ;DISABLED FOR ALL DIGITS
-                CAll    BB_SPI_TX
-                CALL    MAX7219_DESELECT
+    lfsr    0,MAX7219_Pixels
+MAX7219INIT_ClearPixels:
+    clrf    POSTINC0,c
+    movlw   high(MAX7219_Pixels+(MAX_DISPLAY_WIDTH))
+    xorwf   FSR0H,W,c
+    bnz     MAX7219INIT_ClearPixels
+    movlw   low(MAX7219_Pixels+(MAX_DISPLAY_WIDTH))
+    xorwf   FSR0L,W,c
+    bnz     MAX7219INIT_ClearPixels
 
-                CALL    MAX7219_SELECT
-                MOVLW   0x0A            ;INTENSITY COMMAND
-                CAll    BB_SPI_TX
-                MOVLW   0x01            ;INTENSITY VALUE
-                CAll    BB_SPI_TX
-                CALL    MAX7219_DESELECT
+    CALL    MAX7219_SELECT
+    MOVLW   0x0C            ;SHUTDOWN COMMAND
+    CAll    BB_SPI_TX
+    MOVLW   0x01            ;RELEASED
+    CAll    BB_SPI_TX
+    CALL    MAX7219_DESELECT
 
-                CALL    MAX7219_SELECT
-                MOVLW   0x0B            ;SCAN LIMIT COMMAND
-                CAll    BB_SPI_TX
-                MOVLW   0x07            ;ALL DIGITS
-                CAll    BB_SPI_TX
-                CALL    MAX7219_DESELECT
+    CALL    MAX7219_SELECT
+    MOVLW   0x09            ;DECODE MODE COMMAND
+    CAll    BB_SPI_TX
+    MOVLW     0             ;DISABLED FOR ALL DIGITS
+    CAll    BB_SPI_TX
+    CALL    MAX7219_DESELECT
 
-                CALL    MAX7219_SELECT
-                MOVLW   0x0F            ;TEST MODE COMMAND
-                CAll    BB_SPI_TX
-                MOVLW     0             ;NORMAL
-                CAll    BB_SPI_TX
-                CALL    MAX7219_DESELECT
+    CALL    MAX7219_SELECT
+    MOVLW   0x0A            ;INTENSITY COMMAND
+    CAll    BB_SPI_TX
+    MOVLW   0x01            ;INTENSITY VALUE
+    CAll    BB_SPI_TX
+    CALL    MAX7219_DESELECT
 
-                MOVLW     1             ; 
-                CALL    ZERO_COLUMN
-                MOVLW     2             ; 
-                CALL    ZERO_COLUMN
-                MOVLW     3             ; 
-                CALL    ZERO_COLUMN
-                MOVLW     4             ; 
-                CALL    ZERO_COLUMN
-                MOVLW     5             ; 
-                CALL    ZERO_COLUMN
-                MOVLW     6             ; 
-                CALL    ZERO_COLUMN
-                MOVLW     7             ; 
-                CALL    ZERO_COLUMN
-                MOVLW     8             ; 
+    CALL    MAX7219_SELECT
+    MOVLW   0x0B            ;SCAN LIMIT COMMAND
+    CAll    BB_SPI_TX
+    MOVLW   0x07            ;ALL DIGITS
+    CAll    BB_SPI_TX
+    CALL    MAX7219_DESELECT
+
+    CALL    MAX7219_SELECT
+    MOVLW   0x0F            ;TEST MODE COMMAND
+    CAll    BB_SPI_TX
+    MOVLW     0             ;NORMAL
+    CAll    BB_SPI_TX
+    CALL    MAX7219_DESELECT
+
+    MOVLW     1             ; 
+    CALL    ZERO_COLUMN
+    MOVLW     2             ; 
+    CALL    ZERO_COLUMN
+    MOVLW     3             ; 
+    CALL    ZERO_COLUMN
+    MOVLW     4             ; 
+    CALL    ZERO_COLUMN
+    MOVLW     5             ; 
+    CALL    ZERO_COLUMN
+    MOVLW     6             ; 
+    CALL    ZERO_COLUMN
+    MOVLW     7             ; 
+    CALL    ZERO_COLUMN
+    MOVLW     8             ; 
 ZERO_COLUMN:
-                CALL    MAX7219_SELECT
-                CALL    BB_SPI_TX
-                MOVLW   0
-                CALL    BB_SPI_TX
-                CALL    MAX7219_DESELECT
+    CALL    MAX7219_SELECT
+    CALL    BB_SPI_TX
+    MOVLW   0
+    CALL    BB_SPI_TX
+    CALL    MAX7219_DESELECT
 
-                RETURN
+    RETURN
 
 ;MAX7219 SUBS ENDS-----------------------------------------------------------------------------
 ;
-; Write a byte to EUSART2
-;
-EUSART2_Write:
-
-EUSART2_WaitForTx:
-    btfss   TXSTA2,TXSTA2_TRMT_POSITION,c
-    bra     EUSART2_WaitForTx
-    movwf   TXREG2,c
-    return
-;
-; Send an ASCIIZ string from ROM to EUSART2
-;
-EUSART2_PutsRom:
-    tblrd*+
-    movf    TABLAT,W,c
-    tblrd*+
-    btfsc   STATUS,STATUS_Z_POSITION,C
-    return
-    call    EUSART2_Write
-    bra     EUSART2_PutsRom
-;
 ; Data in banked memory
 ;
-    PSECT   udata
+    psect	DigitsData,global,class=RAM,space=1,delta=1,noexec
     global  Digits
 #define NUMBER_OF_DIGITS 8
 Digits:     DS      NUMBER_OF_DIGITS
 ;
 ; Digits Functions to clear, increment, decrement, and check for zero
 ;
-    PSECT   code
+    PSECT   DigitsCode,global,reloc=2,class=CODE,delta=1
 ;
 ; Clear digit array to zero
 ;
@@ -593,9 +596,30 @@ Digits_Print_Exit:
     call    EUSART2_Write
     return
 ;
-; Main Application
+; Write a byte to EUSART2
 ;
     PSECT   code
+EUSART2_Write:
+
+EUSART2_WaitForTx:
+    btfss   TXSTA2,TXSTA2_TRMT_POSITION,c
+    bra     EUSART2_WaitForTx
+    movwf   TXREG2,c
+    return
+;
+; Send an ASCIIZ string from ROM to EUSART2
+;
+EUSART2_PutsRom:
+    tblrd*+
+    movf    TABLAT,W,c
+    tblrd*+
+    btfsc   STATUS,STATUS_Z_POSITION,C
+    return
+    call    EUSART2_Write
+    bra     EUSART2_PutsRom
+;
+; Main Application
+;
     global  main
 main:
     call    PIC_Init
