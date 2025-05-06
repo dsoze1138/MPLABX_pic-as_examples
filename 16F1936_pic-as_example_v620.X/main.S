@@ -15,13 +15,13 @@
 ;                 RA3 <> :  5               24 : <> RB3
 ;                 RA4 <> :  6               23 : <> RB2
 ;                 RA5 <> :  7               22 : <> RB1
-;             GND VSS -> :  8               21 : <> RB0
+;             GND VSS -> :  8           INT 21 : <> RB0
 ;                 RA7 <> :  9 OSC1          20 : <- VDD 5v0
 ;                 RA6 <> : 10 OSC2          19 : <- VSS GND
-;                 RC0 <> : 11 SOSCO         18 : <> RC7
-;                 RC1 <> : 12 SOSCI         17 : <> RC6
-;                 RC2 <> : 13               16 : <> RC5
-;                 RC3 <> : 14               15 : <> RC4
+;                 RC0 <> : 11 SOSCO      RX 18 : <> RC7
+;                 RC1 <> : 12 SOSCI      TX 17 : <> RC6
+;                 RC2 <> : 13 CCP1          16 : <> RC5
+;                 RC3 <> : 14 SCL       SDA 15 : <> RC4
 ;                        +---------------------+
 ;                                DIP-28
 ; 
