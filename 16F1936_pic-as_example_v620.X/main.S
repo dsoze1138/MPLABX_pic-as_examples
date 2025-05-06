@@ -1,4 +1,4 @@
-; File:   main.c
+; File:   main.S
 ; Author: dan1138
 ; Target: PIC16F1936
 ; Compiler: pic-as v3.00
@@ -26,7 +26,7 @@
 ;                                DIP-28
 ; 
 ; Description:
-;   This is an example template of setting up a pic-as main appliation source code file.
+;   This is an example template of setting up a pic-as main application source code file.
 ; 
 ; Add this line in the project properties box, pic-as Global Options -> Additional options: 
 ;    -Wl,-DCODE=2,-presetVec=0h,-pinterruptVec=4h -Wa,-a
