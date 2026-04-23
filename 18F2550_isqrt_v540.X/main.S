@@ -148,6 +148,8 @@ Start:
 ;
     goto    main
 ;
+; https://en.wikipedia.org/wiki/Integer_square_root
+;
 ; Implement integer square root
 ;
 ;       unsigned long   in;
